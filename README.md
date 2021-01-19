@@ -1,3 +1,5 @@
-https://github.com/sbecker/gin-api-demo
-https://www.agiratech.com/blog/building-restful-api-service-golang-using-gin-gonic
-https://github.com/gin-gonic/gin#installation
+- https://github.com/sbecker/gin-api-demo
+- https://www.agiratech.com/blog/building-restful-api-service-golang-using-gin-gonic
+- https://github.com/gin-gonic/gin#installation
+- https://gorm.io/
+- https://medium.com/@cgrant/developing-a-simple-crud-api-with-go-gin-and-gorm-df87d98e6ed1

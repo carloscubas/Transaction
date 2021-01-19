@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+    mysql:
+        image: mysql:5.7
+        restart: always
+        environment:
+            MYSQL_DATABASE: 'db'
+            MYSQL_USER: 'user'
+            MYSQL_PASSWORD: 'password'
+            MYSQL_ROOT_PASSWORD: 'password'
+        ports:
+            - '3306:3306'
+        expose:
+            - '3306'
+        volumes:
+            - my-db:/var/lib/mysql
+    app:
+        image: golang:1.15
+        ports:
+            - 8090:8080
+        env_file:
+          - env.list
+        volumes:
+            - $PWD:/go/src/app
+        working_dir: /go/src/app
+        depends_on:
+            - mysql
+        command: bash -c "CGO_ENABLED=0 GOOS=linux go build -mod vendor -a -o ./app ./cmd/app && ./app"
+volumes:
+    my-db:

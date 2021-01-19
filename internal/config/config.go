@@ -10,6 +10,7 @@ import (
 type ServiceConfig struct {
 	Server serverInfo
 	Cors   corsInfo
+	Mysql  mysqlInfo
 }
 type serverInfo struct {
 	Address string
@@ -22,6 +23,10 @@ type corsInfo struct {
 	AllowedOrigins []string
 	ExposedHeaders []string
 	MaxAge         int
+}
+
+type mysqlInfo struct {
+	Connection string
 }
 
 func LoadServiceConfig(configFile string) (*ServiceConfig, error) {

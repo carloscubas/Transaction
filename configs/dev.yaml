@@ -4,3 +4,6 @@ server:
     address: ":8080"
     mode: "debug"
 
+mysql:
+    connection: "user:password@tcp(127.0.0.1:3306)/db"
+

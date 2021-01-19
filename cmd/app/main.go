@@ -26,8 +26,9 @@ func main() {
 	}
 
 	config := account.Config{
-		Logger: zap.NewNop(),
-		Adress: sc.Server.Address,
+		Logger:       zap.NewNop(),
+		Adress:       sc.Server.Address,
+		DbConnection: sc.Mysql.Connection,
 	}
 
 	gin.SetMode(sc.Server.Mode)
