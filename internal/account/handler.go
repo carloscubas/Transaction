@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -75,11 +76,35 @@ func (h Handler) NewTransaction(c *gin.Context) {
 		return
 	}
 
-	response, err := h.svc.insertTransaction(transaction);
+	response, err := h.svc.insertTransaction(transaction)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, response)
+}
+
+func (h Handler) GetAccounts(c *gin.Context) {
+	idAccount := c.Param("accountID")
+
+	if len(idAccount) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "id não deve ser nulo"})
+		return
+	}
+
+	id, err := strconv.ParseInt(idAccount, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
+		return
+	}
+
+	response, err := h.svc.getAccount(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, response)
+
 }
