@@ -11,6 +11,8 @@ services:
             MYSQL_ROOT_PASSWORD: 'password'
         ports:
             - '3306:3306'
+        networks:
+            - test-network
         expose:
             - '3306'
         volumes:
@@ -19,6 +21,8 @@ services:
         image: golang:1.15
         ports:
             - 8090:8080
+        networks:
+            - test-network
         env_file:
           - env.list
         volumes:
@@ -29,3 +33,6 @@ services:
         command: bash -c "CGO_ENABLED=0 GOOS=linux go build -mod vendor -a -o ./app ./cmd/app && ./app"
 volumes:
     my-db:
+
+networks:
+    test-network:

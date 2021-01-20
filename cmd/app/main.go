@@ -10,6 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"go.uber.org/zap"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/mysql"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 func main() {
@@ -29,6 +34,8 @@ func main() {
 		Adress:       sc.Server.Address,
 		DbConnection: sc.Mysql.Connection,
 	}
+
+	dataMigration(sc.Mysql.Connection)
 
 	gin.SetMode(sc.Server.Mode)
 	router := gin.New()
@@ -52,35 +59,20 @@ func main() {
 
 }
 
-/*
-// JSONLogMiddleware logs a gin HTTP request in JSON format, with some additional custom key/values
-func JSONLogMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		// Start timer
-		start := time.Now()
+func dataMigration(connection string){
 
-		// Process Request
-		c.Next()
+	log.Info("Data Migration Start ")
 
-		// Stop timer
-		duration := util.GetDurationInMillseconds(start)
+	m, err := migrate.New(
+		"file://db/migrations",
+		"mysql://user:password@tcp(127.0.0.1:3306)/db")
+	m.Steps(2)
 
-		entry := log.WithFields(log.Fields{
-			"client_ip":  util.GetClientIP(c),
-			"duration":   duration,
-			"method":     c.Request.Method,
-			"path":       c.Request.RequestURI,
-			"status":     c.Writer.Status(),
-			"referrer":   c.Request.Referer(),
-			"request_id": c.Writer.Header().Get("Request-Id"),
-		})
-
-		if c.Writer.Status() >= 500 {
-			entry.Error(c.Errors.String())
-		} else {
-			entry.Info("")
-		}
+	if err != nil {
+		panic(err)
 	}
-}
 
- */
+	// 		"github://mattes:personal-access-token@mattes/migrate_test",
+
+	log.Info("Data Migration Finished")
+}
