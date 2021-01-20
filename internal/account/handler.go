@@ -22,20 +22,29 @@ func NewHandler(s *Service, l *zap.Logger) *Handler {
 func (h Handler) NewAccounts(c *gin.Context) {
 	var account Account
 
-	data, _ := ioutil.ReadAll(c.Request.Body)
+	data, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		h.logger.Error(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
+		return
+	}
+
 	if e := json.Unmarshal(data, &account); e != nil {
+		h.logger.Error(e.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"msg": e.Error()})
 		return
 	}
 
-	err := account.validate()
+	err = account.validate()
 	if err != nil {
+		h.logger.Error(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
 		return
 	}
 
 	response, err := h.svc.insertAccount(account)
 	if err != nil {
+		h.logger.Error(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
 		return
 	}
@@ -48,13 +57,19 @@ func (h Handler) NewTransaction(c *gin.Context) {
 
 	var transaction Transaction
 
-	data, _ := ioutil.ReadAll(c.Request.Body)
+	data, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		h.logger.Error(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
+		return
+	}
+
 	if e := json.Unmarshal(data, &transaction); e != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": e.Error()})
 		return
 	}
 
-	err := transaction.validate()
+	err = transaction.validate()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
 		return

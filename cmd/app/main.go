@@ -3,12 +3,11 @@ package main
 import (
 	"flag"
 	"net/http"
-	"time"
 	"transaction/internal/account"
 	"transaction/internal/config"
 
+	httpLogger "github.com/elafarge/gin-http-logger"
 	"github.com/gin-gonic/gin"
-	"github.com/sbecker/gin-api-demo/util"
 	log "github.com/sirupsen/logrus"
 	"go.uber.org/zap"
 )
@@ -33,7 +32,18 @@ func main() {
 
 	gin.SetMode(sc.Server.Mode)
 	router := gin.New()
-	router.Use(JSONLogMiddleware())
+
+
+	httpLoggerConf := httpLogger.AccessLoggerConfig{
+		LogrusLogger:   log.StandardLogger(),
+		BodyLogPolicy:  httpLogger.LogBodiesOnErrors,
+		MaxBodyLogSize: 100,
+		DropSize:       5,
+		RetryInterval:  5,
+	}
+
+	router.Use(httpLogger.New(httpLoggerConf))
+
 	router.NoRoute(func(c *gin.Context) {
 		c.AbortWithStatus(http.StatusNotFound)
 	})
@@ -42,6 +52,7 @@ func main() {
 
 }
 
+/*
 // JSONLogMiddleware logs a gin HTTP request in JSON format, with some additional custom key/values
 func JSONLogMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -71,3 +82,5 @@ func JSONLogMiddleware() gin.HandlerFunc {
 		}
 	}
 }
+
+ */
