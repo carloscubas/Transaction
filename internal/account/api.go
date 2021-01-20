@@ -28,6 +28,7 @@ func SetRoutes(handler *Handler, config Config, router *gin.Engine) {
 	api := router.Group("/v1")
 	{
 		api.POST("/transaction", handler.NewTransaction)
+		api.POST("/accounts", handler.NewAccounts)
 	}
 
 	router.Run(config.Adress)

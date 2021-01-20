@@ -19,6 +19,31 @@ func NewHandler(s *Service, l *zap.Logger) *Handler {
 	return &Handler{svc: s, logger: l}
 }
 
+func (h Handler) NewAccounts(c *gin.Context) {
+	var account Account
+
+	data, _ := ioutil.ReadAll(c.Request.Body)
+	if e := json.Unmarshal(data, &account); e != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": e.Error()})
+		return
+	}
+
+	err := account.validate()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
+		return
+	}
+
+	response, err := h.svc.insertAccount(account)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, response)
+
+}
+
 func (h Handler) NewTransaction(c *gin.Context) {
 
 	var transaction Transaction
@@ -35,10 +60,11 @@ func (h Handler) NewTransaction(c *gin.Context) {
 		return
 	}
 
-	if err = h.svc.insertTransaction(transaction); err != nil {
+	response, err := h.svc.insertTransaction(transaction);
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"status": "success", "users": "cubas"})
+	c.JSON(http.StatusOK, response)
 }

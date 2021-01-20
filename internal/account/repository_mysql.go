@@ -24,42 +24,46 @@ func NewMysqlRepository(config Config) (*MysqlRepository, error) {
 	}, nil
 }
 
-func (r *MysqlRepository) InsertAccount(account Account) error {
+func (r *MysqlRepository) InsertAccount(account Account) (*Account, error) {
 	stmt, err := r.db.Prepare("insert into Accounts(Document_Number) values (?)")
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	res, err := stmt.Exec(account.DocumentNumber)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	_, err = res.LastInsertId()
+	id, err := res.LastInsertId()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	account.Id = id
+
+	return &account, nil
 }
 
-func (r *MysqlRepository) InsertTransactions(transaction Transaction) error {
-	stmt, err := r.db.Prepare("insert into Transactions(Account_ID, OperationType_ID, Amount, EventDate) values (?, ?, ?, ?)")
+func (r *MysqlRepository) InsertTransactions(transaction Transaction) (*Transaction, error) {
+	stmt, err := r.db.Prepare("insert into Transactions(Account_ID, OperationsType_ID, Amount, EventDate) values (?, ?, ?, ?)")
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	res, err := stmt.Exec(transaction.AccountId, transaction.OperationTypeId, transaction.Amount, time.Now())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	_, err = res.LastInsertId()
+	id, err := res.LastInsertId()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	transaction.Id = id
+
+	return &transaction, nil
 }
 
 func (r *MysqlRepository) GetAccount(id int64) (*Account, error) {

@@ -7,15 +7,15 @@ import (
 )
 
 type Repository interface {
-	InsertAccount(account Account) error
-	InsertTransactions(transaction Transaction) error
+	InsertAccount(account Account) (*Account, error)
+	InsertTransactions(transaction Transaction) (*Transaction, error)
 	GetAccount(id int64) (*Account, error)
 	GetOperationType(id int64) (*OperationType, error)
 }
 
 type Account struct {
 	Id             int64  `json:"Account_ID"`
-	DocumentNumber string `json:"Document_Number"`
+	DocumentNumber string `json:"DocumentNumber"`
 }
 
 func (t Account) validate() error {
@@ -33,7 +33,7 @@ type OperationType struct {
 type Transaction struct {
 	Id              int64     `json:"TransactionID"`
 	AccountId       int64     `json:"AccountID"`
-	OperationTypeId int64     `json:"OperationTypeID"`
+	OperationTypeId int64     `json:"OperationsTypeID"`
 	Amount          float64   `json:"Amount"`
 	EventData       time.Time `json:"EventDate"`
 }

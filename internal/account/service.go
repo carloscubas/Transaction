@@ -3,8 +3,7 @@ package account
 import "strings"
 
 const (
-	CREDT         = "CREDIT"
-	DEBIT     = "DEBIT"
+	DEBIT = "DEBIT"
 )
 
 // Service struct to hold repository
@@ -21,29 +20,29 @@ func NewService(config Config, repository Repository) *Service {
 	}
 }
 
-func (s Service) insertTransaction(transaction Transaction) error {
+func (s Service) insertTransaction(transaction Transaction) (*Transaction, error) {
 
 	operation, err := s.repo.GetOperationType(transaction.OperationTypeId)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	amount := checkTypeOperation(operation.Type, transaction.Amount)
 	transaction.Amount = amount
 
-	err = s.repo.InsertTransactions(transaction)
+	tra, err := s.repo.InsertTransactions(transaction)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return tra, nil
 }
 
-func (s Service) insertAccount(account Account) error {
-	err := s.repo.InsertAccount(account)
+func (s Service) insertAccount(account Account) (*Account, error) {
+	ac, err := s.repo.InsertAccount(account)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return ac, nil
 }
 
 func (s Service) getAccount(id int64) (*Account, error) {
