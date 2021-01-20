@@ -75,13 +75,21 @@ func (r *MysqlRepository) GetAccount(id int64) (*Account, error) {
 
 	var account = Account{}
 
+	var isFind = false
 	for rows.Next() {
 		err = rows.Scan(&account.Id, &account.DocumentNumber)
+		isFind = true
 		if err != nil {
 			return nil, err
 		}
 	}
-	return &account, nil
+
+	if isFind {
+		return &account, nil
+	}else{
+		return nil, nil
+	}
+
 }
 
 func (r *MysqlRepository) GetOperationType(id int64) (*OperationType, error) {

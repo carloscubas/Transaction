@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"net/http"
 	"transaction/internal/account"
 	"transaction/internal/config"
@@ -65,7 +66,8 @@ func dataMigration(connection string){
 
 	m, err := migrate.New(
 		"file://db/migrations",
-		"mysql://user:password@tcp(127.0.0.1:3306)/db")
+		fmt.Sprintf("mysql://%s", connection),
+		)
 	m.Steps(2)
 
 	if err != nil {

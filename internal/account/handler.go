@@ -2,6 +2,7 @@ package account
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -88,11 +89,6 @@ func (h Handler) NewTransaction(c *gin.Context) {
 func (h Handler) GetAccounts(c *gin.Context) {
 	idAccount := c.Param("accountID")
 
-	if len(idAccount) == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"msg": "id não deve ser nulo"})
-		return
-	}
-
 	id, err := strconv.ParseInt(idAccount, 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
@@ -105,6 +101,10 @@ func (h Handler) GetAccounts(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response)
+	if response == nil {
+		c.JSON(http.StatusNotFound, gin.H{"msg": fmt.Sprintf("Account id: %s not found", idAccount)})
+		return
+	}
 
+	c.JSON(http.StatusOK, response)
 }
