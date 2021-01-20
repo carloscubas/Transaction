@@ -20,7 +20,7 @@ services:
     app:
         image: golang:1.15
         ports:
-            - 8090:8080
+            - 8080:8080
         networks:
             - test-network
         env_file:
