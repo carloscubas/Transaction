@@ -16,6 +16,7 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+
 )
 
 func main() {
@@ -40,7 +41,6 @@ func main() {
 
 	gin.SetMode(sc.Server.Mode)
 	router := gin.New()
-
 
 	httpLoggerConf := httpLogger.AccessLoggerConfig{
 		LogrusLogger:   log.StandardLogger(),
