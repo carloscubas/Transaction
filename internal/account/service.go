@@ -8,27 +8,24 @@ const (
 
 // Service struct to hold repository
 type Service struct {
-	config Config
 	repo   Repository
 }
 
 // NewService create service struct
-func NewService(config Config, repository Repository) *Service {
+func NewService(repository Repository) *Service {
 	return &Service{
-		config: config,
 		repo:   repository,
 	}
 }
 
-func (s Service) insertTransaction(transaction Transaction) (*Transaction, error) {
+func (s Service) InsertTransaction(transaction Transaction) (*Transaction, error) {
 
 	operation, err := s.repo.GetOperationType(transaction.OperationTypeId)
 	if err != nil {
 		return nil, err
 	}
 
-	amount := checkTypeOperation(operation.Type, transaction.Amount)
-	transaction.Amount = amount
+	transaction = checkTypeOperation(operation.Type, transaction)
 
 	tra, err := s.repo.InsertTransactions(transaction)
 	if err != nil {
@@ -37,7 +34,7 @@ func (s Service) insertTransaction(transaction Transaction) (*Transaction, error
 	return tra, nil
 }
 
-func (s Service) insertAccount(account Account) (*Account, error) {
+func (s Service) InsertAccount(account Account) (*Account, error) {
 	ac, err := s.repo.InsertAccount(account)
 	if err != nil {
 		return nil, err
@@ -45,7 +42,7 @@ func (s Service) insertAccount(account Account) (*Account, error) {
 	return ac, nil
 }
 
-func (s Service) getAccount(id int64) (*Account, error) {
+func (s Service) GetAccount(id int64) (*Account, error) {
 	account, err := s.repo.GetAccount(id)
 	if err != nil {
 		return nil, err
@@ -53,9 +50,9 @@ func (s Service) getAccount(id int64) (*Account, error) {
 	return account, nil
 }
 
-func checkTypeOperation(typeOperator string, ammount float64) float64 {
+func checkTypeOperation(typeOperator string, transaction Transaction) Transaction {
 	if strings.Compare(typeOperator, DEBIT) == 0 {
-		ammount = -ammount
+		transaction.Amount = -transaction.Amount
 	}
-	return ammount
+	return transaction
 }

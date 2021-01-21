@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"fmt"
 	"net/http"
@@ -16,7 +17,6 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-
 )
 
 func main() {
@@ -34,10 +34,15 @@ func main() {
 	config := account.Config{
 		Logger:       zap.NewNop(),
 		Adress:       sc.Server.Address,
-		DbConnection: sc.Mysql.Connection,
+		DbConnection: sc.Db.Connection,
 	}
 
-	dataMigration(sc.Mysql.Connection)
+	db, err := sql.Open(sc.Db.Database, sc.Db.Connection)
+	if err != nil {
+		panic(err)
+	}
+
+	dataMigration(sc.Db.Database, sc.Db.Connection)
 
 	gin.SetMode(sc.Server.Mode)
 	router := gin.New()
@@ -56,25 +61,28 @@ func main() {
 		c.AbortWithStatus(http.StatusNotFound)
 	})
 
-	account.NewAPI(config, router)
+	repo, err := account.NewMysqlRepository(db)
+	if err != nil {
+		panic(err)
+	}
+
+	account.NewAPI(config, router, repo)
 
 }
 
-func dataMigration(connection string){
+func dataMigration(database string, connection string){
 
 	log.Info("Data Migration Start ")
 
 	m, err := migrate.New(
 		"file://db/migrations",
-		fmt.Sprintf("mysql://%s", connection),
+		fmt.Sprintf("%s://%s", database, connection),
 		)
 	m.Steps(2)
 
 	if err != nil {
 		panic(err)
 	}
-
-	// 		"github://mattes:personal-access-token@mattes/migrate_test",
 
 	log.Info("Data Migration Finished")
 }

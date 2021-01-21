@@ -19,6 +19,7 @@ CREATE TABLE Transactions (
 
 ALTER TABLE Transactions ADD CONSTRAINT Transactions_FK_Account FOREIGN KEY (Account_ID) REFERENCES Accounts(Account_ID);
 ALTER TABLE Transactions ADD CONSTRAINT Transactions_FK_OperationsType FOREIGN KEY (OperationsType_ID) REFERENCES OperationsTypes(OperationsType_ID);
+ALTER TABLE Accounts ADD CONSTRAINT Accounts_UN UNIQUE KEY (Document_Number);
 
 INSERT INTO OperationsTypes (Description,OperationsType) VALUES
 ('COMPRA A VISTA','DEBIT'),

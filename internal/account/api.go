@@ -12,14 +12,9 @@ type Config struct {
 }
 
 // NewAPI create API handler
-func NewAPI(config Config, router *gin.Engine) error {
+func NewAPI(config Config, router *gin.Engine, repository Repository) error {
 
-	repo, err := NewMysqlRepository(config)
-	if err != nil {
-		return err
-	}
-
-	notificationsHandler := NewHandler(NewService(config, repo), config.Logger)
+	notificationsHandler := NewHandler(NewService(repository), config.Logger)
 	SetRoutes(notificationsHandler, config, router)
 	return nil
 }

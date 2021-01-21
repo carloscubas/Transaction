@@ -8,18 +8,11 @@ import (
 )
 
 type MysqlRepository struct {
-	config Config
 	db     *sql.DB
 }
 
-func NewMysqlRepository(config Config) (*MysqlRepository, error) {
-	db, err := sql.Open("mysql", config.DbConnection)
-	if err != nil {
-		return nil, err
-	}
-
+func NewMysqlRepository(db *sql.DB) (*MysqlRepository, error) {
 	return &MysqlRepository{
-		config: config,
 		db:     db,
 	}, nil
 }

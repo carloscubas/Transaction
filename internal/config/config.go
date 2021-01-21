@@ -11,15 +11,16 @@ import (
 
 type ServiceConfig struct {
 	Server serverInfo
-	Mysql  mysqlInfo
+	Db  dbInfo
 }
 type serverInfo struct {
 	Address string `envconfig:"API_SERVER_ADRESS" yaml:"address" json:"address"`
 	Mode    string `envconfig:"API_SERVER_MODE" yaml:"mode" json:"mode"`
 }
 
-type mysqlInfo struct {
-	Connection string `envconfig:"API_MYSQL_CONNECTION" yaml:"connection" json:"connection"`
+type dbInfo struct {
+	Database string `envconfig:"API_DB_DATABASE" yaml:"database" json:"database"`
+	Connection string `envconfig:"API_DB_CONNECTION" yaml:"connection" json:"connection"`
 }
 
 func LoadServiceConfig(configFile string) (*ServiceConfig, error) {

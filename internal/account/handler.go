@@ -44,7 +44,7 @@ func (h Handler) NewAccounts(c *gin.Context) {
 		return
 	}
 
-	response, err := h.svc.insertAccount(account)
+	response, err := h.svc.InsertAccount(account)
 	if err != nil {
 		h.logger.Error(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
@@ -77,7 +77,7 @@ func (h Handler) NewTransaction(c *gin.Context) {
 		return
 	}
 
-	response, err := h.svc.insertTransaction(transaction)
+	response, err := h.svc.InsertTransaction(transaction)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
 		return
@@ -95,7 +95,7 @@ func (h Handler) GetAccounts(c *gin.Context) {
 		return
 	}
 
-	response, err := h.svc.getAccount(id)
+	response, err := h.svc.GetAccount(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
 		return

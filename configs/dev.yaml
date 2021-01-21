@@ -1,10 +1,11 @@
 service_name: "transaction"
 
 server:
-    address: ":8090"
+    address: ":8080"
     mode: "debug"
 
-mysql:
+db:
+    database: "mysql"
     connection: "user:password@tcp(127.0.0.1:3306)/db"
 
 
