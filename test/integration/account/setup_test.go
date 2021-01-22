@@ -10,9 +10,7 @@ import (
 	"transaction/internal/account"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/go-github/test/integration"
 	"github.com/gorilla/mux"
-	"go.uber.org/zap"
 )
 
 func TestMain(m *testing.M) {
@@ -24,14 +22,15 @@ func newTestServer(config account.Config, repository account.Repository) (*httpt
 	var (
 		r              = mux.NewRouter()
 		g              = gin.New()
-		s              = account.NewService(config, repository)
-		accountHandler = account.NewHandler(s, config.Logger)
+		// s              = account.NewService(config, repository)
+		accountHandler = account.NewHandler(nil, config.Logger)
 	)
 
 	account.SetRoutes(accountHandler, config, g)
 	return httptest.NewServer(r), nil
 }
 
+/*
 func newMockServer() (*httptest.Server, error) {
 	mw := integration.NewTestMiddleware()
 	l := zap.Logger{}
@@ -40,6 +39,8 @@ func newMockServer() (*httptest.Server, error) {
 	SetMockRoutes(mockHandler, r, &mw.Middleware)
 	return httptest.NewServer(r), nil
 }
+
+ */
 
 
 func requestAccounts(ts *httptest.Server) (int, []byte, error) {

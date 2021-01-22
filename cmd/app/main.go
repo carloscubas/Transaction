@@ -61,7 +61,7 @@ func main() {
 		c.AbortWithStatus(http.StatusNotFound)
 	})
 
-	repo, err := account.NewMysqlRepository(db)
+	repo, err := account.NewRepository(db)
 	if err != nil {
 		panic(err)
 	}

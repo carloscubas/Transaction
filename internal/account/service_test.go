@@ -1,48 +1,67 @@
 package account
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
+	_ "github.com/jmrobles/h2go"
 )
 
 func TestInsertTransaction(t *testing.T) {
-
-	mockCtrl := gomock.NewController(t)
-	defer mockCtrl.Finish()
-
-	timeNow := time.Now()
-
-	transactionSaved := Transaction{
-		AccountId: 1,
-		OperationTypeId: 1,
-		Amount: -26.0,
-		EventData: timeNow,
-	}
+	conn := before()
+	repository, _ := NewRepository(conn)
 
 	transaction := Transaction{
 		AccountId: 1,
 		OperationTypeId: 1,
 		Amount: 26.0,
-		EventData: timeNow,
+		EventData: time.Now(),
 	}
 
-	mockRepository := NewMockRepository(mockCtrl)
-	mockRepository.EXPECT().InsertTransactions(transactionSaved).Return(&transactionSaved, nil).Times(1)
-	mockRepository.EXPECT().GetOperationType(transaction.OperationTypeId).Return(&OperationType{Type: DEBIT}, nil).Times(1)
-
-	service := NewService(mockRepository)
+	service := NewService(repository)
 	response, _ := service.InsertTransaction(transaction)
-	fmt.Println(response)
+
+	if response.Amount != -26.0 {
+		t.Errorf("expected %f, got %f", -26.0, response.Amount)
+	}
+
+	after(conn)
 }
+
+func TestInsertAccount(t *testing.T) {
+	conn := before()
+	repository, _ := NewRepository(conn)
+
+	account := Account{
+		DocumentNumber: "578945558",
+	}
+
+	service := NewService(repository)
+	response, _ := service.InsertAccount(account)
+
+	if response.DocumentNumber != "578945558" {
+		t.Errorf("expected %s, got %s", "578945558", response.DocumentNumber)
+	}
+}
+
+func TestGetAccount(t *testing.T) {
+	conn := before()
+	repository, _ := NewRepository(conn)
+
+	service := NewService(repository)
+	response, _ := service.GetAccount(1)
+
+	if response.DocumentNumber != "123456" {
+		t.Errorf("expected %s, got %s", "123456", response.DocumentNumber)
+	}
+}
+
 
 func TestCheckTypeOperation(t *testing.T) {
 	transaction := Transaction{
-		AccountId: 1,
+		AccountId:       1,
 		OperationTypeId: 1,
-		Amount: 26.30,
+		Amount:          26.30,
 	}
 
 	result := checkTypeOperation(DEBIT, transaction)

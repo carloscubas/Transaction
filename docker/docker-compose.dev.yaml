@@ -30,7 +30,7 @@ services:
         working_dir: /go/src/app
         depends_on:
             - mysql
-        # command: bash -c "CGO_ENABLED=0 GOOS=linux go build -mod vendor -a -o ./app ./cmd/app && ./app"
+        command: bash -c "CGO_ENABLED=0 GOOS=linux go build -mod vendor -a -o ./app ./cmd/app && ./app"
 volumes:
     my-db:
 

@@ -17,10 +17,12 @@ require (
 	github.com/golang/mock v1.4.4
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/gorilla/mux v1.7.4
+	github.com/jmrobles/h2go v0.5.0
 	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/lib/pq v1.8.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/sbecker/gin-api-demo v0.0.0-20180212174919-07f9a9242f74 // indirect
 	github.com/sirupsen/logrus v1.7.0

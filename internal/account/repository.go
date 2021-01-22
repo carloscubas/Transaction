@@ -2,18 +2,18 @@ package account
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
-
-	_ "github.com/go-sql-driver/mysql"
+	// _ "github.com/go-sql-driver/mysql"
 )
 
 type MysqlRepository struct {
-	db     *sql.DB
+	db *sql.DB
 }
 
-func NewMysqlRepository(db *sql.DB) (*MysqlRepository, error) {
+func NewRepository(db *sql.DB) (*MysqlRepository, error) {
 	return &MysqlRepository{
-		db:     db,
+		db: db,
 	}, nil
 }
 
@@ -61,44 +61,27 @@ func (r *MysqlRepository) InsertTransactions(transaction Transaction) (*Transact
 
 func (r *MysqlRepository) GetAccount(id int64) (*Account, error) {
 
-	rows, err := r.db.Query("select * from Accounts where Account_ID = ?;", id)
+	row := r.db.QueryRow(fmt.Sprintf("select * from Accounts where Account_ID = %d;", id))
+
+	var account = Account{}
+	err := row.Scan(&account.Id, &account.DocumentNumber)
 	if err != nil {
 		return nil, err
 	}
 
-	var account = Account{}
-
-	var isFind = false
-	for rows.Next() {
-		err = rows.Scan(&account.Id, &account.DocumentNumber)
-		isFind = true
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if isFind {
-		return &account, nil
-	}else{
-		return nil, nil
-	}
-
+	return &account, nil
 }
 
 func (r *MysqlRepository) GetOperationType(id int64) (*OperationType, error) {
 
-	rows, err := r.db.Query("select * from OperationsTypes where OperationsType_ID = ?;", id)
+	row := r.db.QueryRow(fmt.Sprintf("select * from OperationsTypes where OperationsType_ID = %d;", id))
+
+	var operationType = OperationType{}
+	err := row.Scan(&operationType.Id, &operationType.Description, &operationType.Type)
+
 	if err != nil {
 		return nil, err
 	}
 
-	var operationType = OperationType{}
-
-	for rows.Next() {
-		err = rows.Scan(&operationType.Id, &operationType.Description, &operationType.Type)
-		if err != nil {
-			return nil, err
-		}
-	}
 	return &operationType, nil
 }
