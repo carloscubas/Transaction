@@ -1,72 +1,68 @@
 package account
 
 import (
-	"context"
-	"io/ioutil"
-	"net/http"
-	"net/http/httptest"
-	"os"
-	"testing"
+	"database/sql"
+	"log"
 	"transaction/internal/account"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/mux"
+	_ "github.com/jmrobles/h2go"
+	"go.uber.org/zap"
 )
 
-func TestMain(m *testing.M) {
-	os.Exit(m.Run())
+func main() {
+	setupServer().Run()
 }
 
-func newTestServer(config account.Config, repository account.Repository) (*httptest.Server, error) {
+// The engine with all endpoints is now extracted from the main function
+func setupServer() *gin.Engine {
 
-	var (
-		r              = mux.NewRouter()
-		g              = gin.New()
-		// s              = account.NewService(config, repository)
-		accountHandler = account.NewHandler(nil, config.Logger)
-	)
+	conn := before()
+	repository, _ := account.NewRepository(conn)
 
-	account.SetRoutes(accountHandler, config, g)
-	return httptest.NewServer(r), nil
-}
+	handler := account.NewHandler(account.NewService(repository), zap.NewNop())
 
-/*
-func newMockServer() (*httptest.Server, error) {
-	mw := integration.NewTestMiddleware()
-	l := zap.Logger{}
-	r := mux.NewRouter()
-	mockHandler := NewHandler(&l)
-	SetMockRoutes(mockHandler, r, &mw.Middleware)
-	return httptest.NewServer(r), nil
-}
+	router := gin.Default()
 
- */
-
-
-func requestAccounts(ts *httptest.Server) (int, []byte, error) {
-	accountURL := ts.URL + "/v1/accounts/1"
-	rr, err := createGetRequest(accountURL)
-	if err != nil {
-		return -1, nil, err
+	api := router.Group("/v1")
+	{
+		api.POST("/transaction", handler.NewTransaction)
+		api.POST("/accounts", handler.NewAccounts)
+		api.GET("/accounts/:accountID", handler.GetAccounts)
 	}
-	defer rr.Body.Close()
-	bodyBytes, err := ioutil.ReadAll(rr.Body)
-	if err != nil {
-		return -1, nil, err
-	}
-	return rr.StatusCode, bodyBytes, nil
+
+	return router
 }
 
-func createGetRequest(url string) (*http.Response, error) {
-	req, err := http.NewRequestWithContext(
-		context.Background(),
-		http.MethodGet,
-		url,
-		nil,
-	)
-	if err != nil {
-		return nil, err
-	}
-	return http.DefaultClient.Do(req)
-}
 
+func before() *sql.DB{
+
+	var ddl [11]string
+	ddl[0] = "CREATE TABLE Accounts (Account_ID INTEGER auto_increment primary key, Document_Number varchar(100) NOT NULL);"
+	ddl[1] = "INSERT INTO Accounts (Account_ID, Document_Number) VALUES (1, '123456');"
+	ddl[2] = "CREATE TABLE OperationsTypes ( OperationsType_ID INTEGER auto_increment primary key, Description varchar(200) NOT NULL, OperationsType varchar(200) NOT NULL);"
+	ddl[3] = "CREATE TABLE Transactions (Transaction_ID INTEGER auto_increment primary key, Account_ID INTEGER NOT NULL, OperationsType_ID INTEGER NOT NULL, Amount DOUBLE NOT NULL, EventDate DATE);"
+	ddl[4] = "ALTER TABLE Transactions ADD CONSTRAINT Transactions_FK_Account FOREIGN KEY (Account_ID) REFERENCES Accounts(Account_ID);"
+	ddl[5] = "ALTER TABLE Transactions ADD CONSTRAINT Transactions_FK_OperationsType FOREIGN KEY (OperationsType_ID) REFERENCES OperationsTypes(OperationsType_ID);"
+	ddl[6] = "ALTER TABLE Accounts ADD CONSTRAINT Accounts_UN UNIQUE KEY (Document_Number);"
+	ddl[7] = "INSERT INTO OperationsTypes (OperationsType_ID, Description,OperationsType) VALUES (1, 'COMPRA A VISTA','DEBIT');"
+	ddl[8] = "INSERT INTO OperationsTypes (OperationsType_ID, Description,OperationsType) VALUES (2, 'COMPRA PARCELADA','DEBIT');"
+	ddl[9] = "INSERT INTO OperationsTypes (OperationsType_ID, Description,OperationsType) VALUES (3, 'SAQUE','DEBIT');"
+	ddl[10] = "INSERT INTO OperationsTypes (OperationsType_ID, Description,OperationsType) VALUES (4, 'PAGAMENTO','CREDIT');"
+
+	conn, err := sql.Open("h2",  "h2://sa@localhost/test?mem=true&logging=debug")
+
+	if err != nil {
+		log.Fatalf("Can't connet to H2 Database: %s", err)
+		panic(err)
+	}
+
+	for i := 0; i < len(ddl); i++ {
+		_, err := conn.Exec(ddl[i])
+		if err != nil {
+			log.Fatalf("Can't exec ddl commands: %s", err)
+			panic(err)
+		}
+	}
+	return conn
+}

@@ -33,7 +33,7 @@ func main() {
 
 	config := account.Config{
 		Logger:       zap.NewNop(),
-		Adress:       sc.Server.Address,
+		Address:      sc.Server.Address,
 		DbConnection: sc.Db.Connection,
 	}
 

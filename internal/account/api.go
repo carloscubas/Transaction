@@ -7,7 +7,7 @@ import (
 
 type Config struct {
 	Logger       *zap.Logger
-	Adress       string
+	Address      string
 	DbConnection string
 }
 
@@ -27,5 +27,5 @@ func SetRoutes(handler *Handler, config Config, router *gin.Engine) {
 		api.GET("/accounts/:accountID", handler.GetAccounts)
 	}
 
-	router.Run(config.Adress)
+	router.Run(config.Address)
 }
