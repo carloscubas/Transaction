@@ -24,12 +24,9 @@ func setupServer() *gin.Engine {
 
 	router := gin.Default()
 
-	api := router.Group("/v1")
-	{
-		api.POST("/transaction", handler.NewTransaction)
-		api.POST("/accounts", handler.NewAccounts)
-		api.GET("/accounts/:accountID", handler.GetAccounts)
-	}
+	router.POST("/v1/transaction", handler.NewTransaction)
+	router.POST("/v1/accounts", handler.NewAccounts)
+	router.GET("/v1/accounts/:accountID", handler.GetAccounts)
 
 	return router
 }
@@ -37,20 +34,24 @@ func setupServer() *gin.Engine {
 
 func before() *sql.DB{
 
-	var ddl [11]string
-	ddl[0] = "CREATE TABLE Accounts (Account_ID INTEGER auto_increment primary key, Document_Number varchar(100) NOT NULL);"
-	ddl[1] = "INSERT INTO Accounts (Account_ID, Document_Number) VALUES (1, '123456');"
-	ddl[2] = "CREATE TABLE OperationsTypes ( OperationsType_ID INTEGER auto_increment primary key, Description varchar(200) NOT NULL, OperationsType varchar(200) NOT NULL);"
-	ddl[3] = "CREATE TABLE Transactions (Transaction_ID INTEGER auto_increment primary key, Account_ID INTEGER NOT NULL, OperationsType_ID INTEGER NOT NULL, Amount DOUBLE NOT NULL, EventDate DATE);"
-	ddl[4] = "ALTER TABLE Transactions ADD CONSTRAINT Transactions_FK_Account FOREIGN KEY (Account_ID) REFERENCES Accounts(Account_ID);"
-	ddl[5] = "ALTER TABLE Transactions ADD CONSTRAINT Transactions_FK_OperationsType FOREIGN KEY (OperationsType_ID) REFERENCES OperationsTypes(OperationsType_ID);"
-	ddl[6] = "ALTER TABLE Accounts ADD CONSTRAINT Accounts_UN UNIQUE KEY (Document_Number);"
-	ddl[7] = "INSERT INTO OperationsTypes (OperationsType_ID, Description,OperationsType) VALUES (1, 'COMPRA A VISTA','DEBIT');"
-	ddl[8] = "INSERT INTO OperationsTypes (OperationsType_ID, Description,OperationsType) VALUES (2, 'COMPRA PARCELADA','DEBIT');"
-	ddl[9] = "INSERT INTO OperationsTypes (OperationsType_ID, Description,OperationsType) VALUES (3, 'SAQUE','DEBIT');"
-	ddl[10] = "INSERT INTO OperationsTypes (OperationsType_ID, Description,OperationsType) VALUES (4, 'PAGAMENTO','CREDIT');"
+	var ddl [14]string
 
-	conn, err := sql.Open("h2",  "h2://sa@localhost/test?mem=true&logging=debug")
+	ddl[0] = "DROP TABLE IF EXISTS Transactions;"
+	ddl[1] = "DROP TABLE IF EXISTS OperationsTypes;"
+	ddl[2] = "DROP TABLE IF EXISTS Accounts;"
+	ddl[3] = "CREATE TABLE Accounts (Account_ID INTEGER auto_increment primary key, Document_Number varchar(100) NOT NULL);"
+	ddl[4] = "INSERT INTO Accounts (Account_ID, Document_Number) VALUES (1, '123456');"
+	ddl[5] = "CREATE TABLE OperationsTypes ( OperationsType_ID INTEGER auto_increment primary key, Description varchar(200) NOT NULL, OperationsType varchar(200) NOT NULL);"
+	ddl[6] = "CREATE TABLE Transactions (Transaction_ID INTEGER auto_increment primary key, Account_ID INTEGER NOT NULL, OperationsType_ID INTEGER NOT NULL, Amount DOUBLE NOT NULL, EventDate DATE);"
+	ddl[7] = "ALTER TABLE Transactions ADD CONSTRAINT Transactions_FK_Account FOREIGN KEY (Account_ID) REFERENCES Accounts(Account_ID);"
+	ddl[8] = "ALTER TABLE Transactions ADD CONSTRAINT Transactions_FK_OperationsType FOREIGN KEY (OperationsType_ID) REFERENCES OperationsTypes(OperationsType_ID);"
+	ddl[9] = "ALTER TABLE Accounts ADD CONSTRAINT Accounts_UN UNIQUE KEY (Document_Number);"
+	ddl[10] = "INSERT INTO OperationsTypes (OperationsType_ID, Description,OperationsType) VALUES (1, 'COMPRA A VISTA','DEBIT');"
+	ddl[11] = "INSERT INTO OperationsTypes (OperationsType_ID, Description,OperationsType) VALUES (2, 'COMPRA PARCELADA','DEBIT');"
+	ddl[12] = "INSERT INTO OperationsTypes (OperationsType_ID, Description,OperationsType) VALUES (3, 'SAQUE','DEBIT');"
+	ddl[13] = "INSERT INTO OperationsTypes (OperationsType_ID, Description,OperationsType) VALUES (4, 'PAGAMENTO','CREDIT');"
+
+	conn, err := sql.Open("h2",  "h2://sa@localhost/test?mem=true&logging=info")
 
 	if err != nil {
 		log.Fatalf("Can't connet to H2 Database: %s", err)

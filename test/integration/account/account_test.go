@@ -1,18 +1,19 @@
 package account
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"transaction/internal/account"
 )
 
-func TestPingRoute(t *testing.T) {
+func TestGetAccount(t *testing.T) {
 	ts := httptest.NewServer(setupServer())
 
 	defer ts.Close()
-
-	fmt.Printf("%s/accounts/1", ts.URL)
 
 	resp, err := http.Get(fmt.Sprintf("%s/v1/accounts/1", ts.URL))
 	if err != nil {
@@ -22,4 +23,70 @@ func TestPingRoute(t *testing.T) {
 	if resp.StatusCode != 200 {
 		t.Fatalf("Expected status code 200, got %v", resp.StatusCode)
 	}
+
+	var ac account.Account
+	err = json.NewDecoder(resp.Body).Decode(&ac)
+	if err != nil {
+		t.Fatalf("Expected account Body")
+	}
+
+	if ac.DocumentNumber != "123456" {
+		t.Fatalf("Expected expected, got %s but %s", "123456", ac.DocumentNumber)
+	}
 }
+func TestInsertAccount(t *testing.T) {
+	ts := httptest.NewServer(setupServer())
+
+	defer ts.Close()
+
+	values := map[string]string{"DocumentNumber" : "654321"}
+	jsonValue, _ := json.Marshal(values)
+	resp, err := http.Post(fmt.Sprintf("%s/v1/accounts", ts.URL), "application/json", bytes.NewBuffer(jsonValue))
+
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	if resp.StatusCode != 200 {
+		t.Fatalf("Expected status code 200, got %v", resp.StatusCode)
+	}
+
+	var ac account.Account
+	err = json.NewDecoder(resp.Body).Decode(&ac)
+	if err != nil {
+		t.Fatalf("Expected account Body")
+	}
+
+	if ac.DocumentNumber != "654321" {
+		t.Fatalf("Expected expected, got %s but %s", "654321", ac.DocumentNumber)
+	}
+}
+
+func TestInsertTransaction(t *testing.T) {
+	ts := httptest.NewServer(setupServer())
+
+	defer ts.Close()
+
+	values := map[string]interface{}{"AccountID" : 1, "OperationsTypeID" : 1, "Amount" : 20.36}
+	jsonValue, _ := json.Marshal(values)
+	resp, err := http.Post(fmt.Sprintf("%s/v1/transaction", ts.URL), "application/json", bytes.NewBuffer(jsonValue))
+
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	if resp.StatusCode != 200 {
+		t.Fatalf("Expected status code 200, got %v", resp.StatusCode)
+	}
+
+	var tr account.Transaction
+	err = json.NewDecoder(resp.Body).Decode(&tr)
+	if err != nil {
+		t.Fatalf("Expected account Body")
+	}
+
+	if tr.Amount != -20.36 {
+		t.Fatalf("Expected expected, got %f but %f", -20.36, tr.Amount)
+	}
+}
+
