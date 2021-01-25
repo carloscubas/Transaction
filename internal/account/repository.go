@@ -6,17 +6,17 @@ import (
 	"time"
 )
 
-type MysqlRepository struct {
+type RepositoryDB struct {
 	db *sql.DB
 }
 
-func NewRepository(db *sql.DB) (*MysqlRepository, error) {
-	return &MysqlRepository{
+func NewRepository(db *sql.DB) (*RepositoryDB, error) {
+	return &RepositoryDB{
 		db: db,
 	}, nil
 }
 
-func (r *MysqlRepository) InsertAccount(account Account) (*Account, error) {
+func (r *RepositoryDB) InsertAccount(account Account) (*Account, error) {
 	stmt, err := r.db.Prepare("insert into Accounts(Document_Number) values (?)")
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (r *MysqlRepository) InsertAccount(account Account) (*Account, error) {
 	return &account, nil
 }
 
-func (r *MysqlRepository) InsertTransactions(transaction Transaction) (*Transaction, error) {
+func (r *RepositoryDB) InsertTransactions(transaction Transaction) (*Transaction, error) {
 	stmt, err := r.db.Prepare("insert into Transactions(Account_ID, OperationsType_ID, Amount, EventDate) values (?, ?, ?, ?)")
 	if err != nil {
 		return nil, err
@@ -58,7 +58,7 @@ func (r *MysqlRepository) InsertTransactions(transaction Transaction) (*Transact
 	return &transaction, nil
 }
 
-func (r *MysqlRepository) GetAccount(id int64) (*Account, error) {
+func (r *RepositoryDB) GetAccount(id int64) (*Account, error) {
 
 	row := r.db.QueryRow(fmt.Sprintf("select * from Accounts where Account_ID = %d;", id))
 
@@ -71,7 +71,7 @@ func (r *MysqlRepository) GetAccount(id int64) (*Account, error) {
 	return &account, nil
 }
 
-func (r *MysqlRepository) GetOperationType(id int64) (*OperationType, error) {
+func (r *RepositoryDB) GetOperationType(id int64) (*OperationType, error) {
 
 	row := r.db.QueryRow(fmt.Sprintf("select * from OperationsTypes where OperationsType_ID = %d;", id))
 
@@ -85,7 +85,7 @@ func (r *MysqlRepository) GetOperationType(id int64) (*OperationType, error) {
 	return &operationType, nil
 }
 
-func(r *MysqlRepository) GetOperationTypes()([]OperationType, error){
+func(r *RepositoryDB) GetOperationTypes()([]OperationType, error){
 
 	var operationsTypes []OperationType
 
