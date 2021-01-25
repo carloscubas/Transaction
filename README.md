@@ -5,7 +5,7 @@
 This project is a small example of a REST API using GoLang.
 
 ## Run 
-
+Before Run app open configs/dev.yaml file and rewrite de data.
 ### Local environment
 
         go run cmd/app/main.go
