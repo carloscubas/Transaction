@@ -19,6 +19,7 @@ func NewAPI(config Config, router *gin.Engine, repository Repository) error {
 	return nil
 }
 
+// SetRoutes is used to aggregate all user endpoints.
 func SetRoutes(handler *Handler, config Config, router *gin.Engine) {
 	api := router.Group("/v1")
 	{
