@@ -30,7 +30,7 @@ services:
         working_dir: /go/src/account-test
         depends_on:
             - mysqltest
-        command: bash -c "go test -v ./..."
+        command: bash -c "go test -count=10 -race -cover ./..."
 volumes:
     my-db:
 
