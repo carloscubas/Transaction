@@ -12,7 +12,6 @@ import (
 	"go.uber.org/zap"
 )
 
-
 // The engine with all endpoints is now extracted from the main function
 func setupServer(db *sql.DB) *gin.Engine {
 
@@ -29,7 +28,7 @@ func setupServer(db *sql.DB) *gin.Engine {
 	return router
 }
 
-func before() *sql.DB{
+func before() *sql.DB {
 
 	var ddl [14]string
 
@@ -55,8 +54,8 @@ func before() *sql.DB{
 		database = os.Getenv("API_DB_DATABASE")
 		dbConnection = os.Getenv("API_DB_CONNECTION")
 	} else {
-		//database = "h2"
-		//dbConnection = "h2://sa@localhost/test?mem=true&logging=info"
+		// database = "h2"
+		// dbConnection = "h2://sa@localhost/test?mem=true&logging=info"
 		database = "mysql"
 		dbConnection = "root:@tcp(127.0.0.1:3306)/dbtest"
 	}
@@ -69,9 +68,7 @@ func before() *sql.DB{
 
 	tx, _ := conn.Begin()
 	for i := 0; i < len(ddl); i++ {
-		log.Printf("Execute %s", ddl[i])
-		response, err := tx.Exec(ddl[i])
-		log.Printf("Response %v", response)
+		_, err := tx.Exec(ddl[i])
 		if err != nil {
 			log.Fatalf("Can't exec ddl commands: %s", err)
 		}
@@ -80,6 +77,6 @@ func before() *sql.DB{
 	return conn
 }
 
-func after(conn *sql.DB){
+func after(conn *sql.DB) {
 	conn.Close()
 }

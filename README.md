@@ -20,6 +20,10 @@ This project is a small example of a REST API using GoLang.
 
         go test -v ./...
 
+### Unit tes covarage
+        
+        go test -v -count=10 -race -cover ./...
+
 ### Integration tests
 
         docker-compose -f docker/docker-compose.test.yaml run test

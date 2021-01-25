@@ -10,6 +10,8 @@ import (
 
 func TestInsertTransaction(t *testing.T) {
 	conn := Before()
+	defer conn.Close()
+
 	repository, _ := NewRepository(conn)
 
 	transaction := Transaction{
@@ -30,6 +32,8 @@ func TestInsertTransaction(t *testing.T) {
 
 func TestInsertAccount(t *testing.T) {
 	conn := Before()
+	defer conn.Close()
+
 	repository, _ := NewRepository(conn)
 
 	account := Account{
@@ -46,6 +50,8 @@ func TestInsertAccount(t *testing.T) {
 
 func TestGetAccount(t *testing.T) {
 	conn := Before()
+	defer conn.Close()
+
 	repository, _ := NewRepository(conn)
 
 	service := NewService(repository)

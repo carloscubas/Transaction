@@ -11,7 +11,6 @@ import (
 	_ "github.com/jmrobles/h2go"
 )
 
-
 func TestInsertAccountRepository(t *testing.T) {
 	conn := Before()
 
@@ -41,10 +40,10 @@ func TestInsertTransactionRepository(t *testing.T) {
 	repository, _ := NewRepository(conn)
 
 	transaction := Transaction{
-		Amount: 23.68,
+		Amount:          23.68,
 		OperationTypeId: 1,
-		AccountId: 1,
-		EventData: time.Now(),
+		AccountId:       1,
+		EventData:       time.Now(),
 	}
 
 	response, _ := repository.InsertTransactions(transaction)
@@ -79,7 +78,7 @@ func TestGetOperationTypeRepository(t *testing.T) {
 
 }
 
-func Before() *sql.DB{
+func Before() *sql.DB {
 	var ddl [14]string
 	ddl[0] = "DROP TABLE IF EXISTS Transactions;"
 	ddl[1] = "DROP TABLE IF EXISTS OperationsTypes;"
@@ -103,8 +102,8 @@ func Before() *sql.DB{
 		database = os.Getenv("API_DB_DATABASE")
 		dbConnection = os.Getenv("API_DB_CONNECTION")
 	} else {
-		// database = "h2"
-		// dbConnection = "h2://sa@localhost/test?mem=true&logging=info"
+		//database = "h2"
+		//dbConnection = "h2://sa@localhost/test?mem=true&logging=info"
 
 		database = "mysql"
 		dbConnection = "root:@tcp(127.0.0.1:3306)/dbtest"
@@ -118,9 +117,7 @@ func Before() *sql.DB{
 
 	tx, _ := conn.Begin()
 	for i := 0; i < len(ddl); i++ {
-		log.Printf("Execute %s", ddl[i])
-		response, err := tx.Exec(ddl[i])
-		log.Printf("Response %v", response)
+		_, err := tx.Exec(ddl[i])
 		if err != nil {
 			log.Fatalf("Can't exec ddl commands: %s", err)
 		}
