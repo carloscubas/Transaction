@@ -1,0 +1,109 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/v1/account": {
+            "post": {
+                "description": "NewAccounts endpoint save a new account",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get NewAccounts",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/account.Account"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/accounts/:accountID": {
+            "get": {
+                "description": "GetAccounts endpoint get account",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get GetAccounts",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/account.Account"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/operationtypes": {
+            "get": {
+                "description": "GetOperationsTypes endpoint get all operations type",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get GetOperationsTypes",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/transaction": {
+            "post": {
+                "description": "NewTransaction endpoint save a new transaction",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Post NewTransaction",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/account.Transaction"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "account.Account": {
+            "type": "object",
+            "properties": {
+                "Account_ID": {
+                    "type": "integer"
+                },
+                "DocumentNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "account.Transaction": {
+            "type": "object",
+            "properties": {
+                "AccountID": {
+                    "type": "integer"
+                },
+                "Amount": {
+                    "type": "number"
+                },
+                "EventDate": {
+                    "type": "string"
+                },
+                "OperationsTypeID": {
+                    "type": "integer"
+                },
+                "TransactionID": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}
