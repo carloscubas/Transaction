@@ -84,3 +84,23 @@ func (r *MysqlRepository) GetOperationType(id int64) (*OperationType, error) {
 
 	return &operationType, nil
 }
+
+func(r *MysqlRepository) GetOperationTypes()([]OperationType, error){
+
+	var operationsTypes []OperationType
+
+	rows, err := r.db.Query("select * from OperationsTypes")
+	if err != nil {
+		return nil, err
+	}
+
+	var operationType OperationType
+	for rows.Next() {
+		err := rows.Scan(&operationType.Id, &operationType.Description, &operationType.Type)
+		if err != nil {
+			return nil, err
+		}
+		operationsTypes = append(operationsTypes, operationType)
+	}
+	return operationsTypes, nil
+}

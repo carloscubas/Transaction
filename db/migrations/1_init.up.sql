@@ -21,8 +21,8 @@ ALTER TABLE Transactions ADD CONSTRAINT Transactions_FK_Account FOREIGN KEY (Acc
 ALTER TABLE Transactions ADD CONSTRAINT Transactions_FK_OperationsType FOREIGN KEY (OperationsType_ID) REFERENCES OperationsTypes(OperationsType_ID);
 ALTER TABLE Accounts ADD CONSTRAINT Accounts_UN UNIQUE KEY (Document_Number);
 
-INSERT INTO OperationsTypes (Description,OperationsType) VALUES
-('COMPRA A VISTA','DEBIT'),
-('COMPRA PARCELADA','DEBIT'),
-('SAQUE','DEBIT'),
-('PAGAMENTO','CREDIT');
+INSERT INTO OperationsTypes (OperationsType_ID, Description, OperationsType) VALUES
+(1, 'COMPRA A VISTA','DEBIT'),
+(2, 'COMPRA PARCELADA','DEBIT'),
+(3, 'SAQUE','DEBIT'),
+(4, 'PAGAMENTO','CREDIT');

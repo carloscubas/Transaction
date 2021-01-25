@@ -15,10 +15,10 @@ func TestInsertTransaction(t *testing.T) {
 	repository, _ := NewRepository(conn)
 
 	transaction := Transaction{
-		AccountId: 1,
+		AccountId:       1,
 		OperationTypeId: 1,
-		Amount: 26.0,
-		EventData: time.Now(),
+		Amount:          26.0,
+		EventData:       time.Now(),
 	}
 
 	service := NewService(repository)
@@ -62,6 +62,19 @@ func TestGetAccount(t *testing.T) {
 	}
 }
 
+func TestGetOperationTypes(t *testing.T) {
+	conn := Before()
+	defer conn.Close()
+
+	repository, _ := NewRepository(conn)
+
+	service := NewService(repository)
+	response, _ := service.GetOperationsType()
+
+	if  len(response) != 4{
+		t.Errorf("expected %d, got %d", 4, len(response))
+	}
+}
 
 func TestCheckTypeOperation(t *testing.T) {
 	transaction := Transaction{

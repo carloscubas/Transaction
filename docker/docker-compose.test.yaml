@@ -5,12 +5,13 @@ services:
         image: mysql:5.7
         restart: always
         environment:
+            MYSQL_TCP_PORT: 3309
             MYSQL_DATABASE: 'db'
             MYSQL_USER: 'user'
             MYSQL_PASSWORD: 'password'
             MYSQL_ROOT_PASSWORD: 'password'
         ports:
-            - '3309:3306'
+            - '3309:3309'
         networks:
             - test-network
         expose:
@@ -22,7 +23,6 @@ services:
         environment:
         - API_DB_DATABASE=mysql
         - API_DB_CONNECTION=user:password@tcp(mysqltest:3309)/db
-        - API_DB_DATAMIGRATION=false
         networks:
             - test-network
         volumes:
@@ -30,7 +30,7 @@ services:
         working_dir: /go/src/account-test
         depends_on:
             - mysqltest
-        command: bash -c "go test -v ./..."
+        command: bash -c "go test -v -cover $$(go list ./... | grep -v /vendor/)"
 volumes:
     my-db:
 

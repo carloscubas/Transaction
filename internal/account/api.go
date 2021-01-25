@@ -25,6 +25,7 @@ func SetRoutes(handler *Handler, config Config, router *gin.Engine) {
 		api.POST("/transaction", handler.NewTransaction)
 		api.POST("/accounts", handler.NewAccounts)
 		api.GET("/accounts/:accountID", handler.GetAccounts)
+		api.GET("/operationtypes", handler.GetOperationsTypes)
 	}
 
 	router.Run(config.Address)

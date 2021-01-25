@@ -22,7 +22,7 @@ This project is a small example of a REST API using GoLang.
 
 ### Unit tes covarage
         
-        go test -v -count=10 -race -cover ./...
+        go test -v -race -cover $(go list ./... | grep -v /vendor/)
 
 ### Integration tests
 

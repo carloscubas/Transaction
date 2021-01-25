@@ -10,10 +10,9 @@ import (
 )
 
 type ServiceConfig struct {
-	Server serverInfo
-	Db  dbInfo
-	ServiceName     string           `envconfig:"API_SERVICE_NAME" yaml:"service_name" json:"service_name" split_words:"true"`
-
+	Server      serverInfo
+	Db          dbInfo
+	ServiceName string `envconfig:"API_SERVICE_NAME" yaml:"service_name" json:"service_name" split_words:"true"`
 }
 type serverInfo struct {
 	Address string `envconfig:"API_SERVER_ADRESS" yaml:"address" json:"address"`
@@ -21,9 +20,8 @@ type serverInfo struct {
 }
 
 type dbInfo struct {
-	Database string `envconfig:"API_DB_DATABASE" yaml:"database" json:"database"`
-	Connection string `envconfig:"API_DB_CONNECTION" yaml:"connection" json:"connection"`
-	Datamigration bool `envconfig:"API_DB_DATAMIGRATION" yaml:"datamigration" json:"datamigration"`
+	Database      string `envconfig:"API_DB_DATABASE" yaml:"database" json:"database"`
+	Connection    string `envconfig:"API_DB_CONNECTION" yaml:"connection" json:"connection"`
 }
 
 func LoadServiceConfig(configFile string) (*ServiceConfig, error) {
@@ -56,4 +54,3 @@ func loadServiceConfigFromFile(configFile string, cfg *ServiceConfig) error {
 
 	return yaml.Unmarshal(yamlFile, &cfg)
 }
-

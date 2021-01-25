@@ -46,7 +46,7 @@ func TestInsertAccount(t *testing.T) {
 	defer ts.Close()
 	defer conn.Close()
 
-	values := map[string]string{"DocumentNumber" : "654321"}
+	values := map[string]string{"DocumentNumber": "654321"}
 	jsonValue, _ := json.Marshal(values)
 	resp, err := http.Post(fmt.Sprintf("%s/v1/accounts", ts.URL), "application/json", bytes.NewBuffer(jsonValue))
 
@@ -79,7 +79,7 @@ func TestInsertTransaction(t *testing.T) {
 	defer ts.Close()
 	defer conn.Close()
 
-	values := map[string]interface{}{"AccountID" : 1, "OperationsTypeID" : 1, "Amount" : 20.36}
+	values := map[string]interface{}{"AccountID": 1, "OperationsTypeID": 1, "Amount": 20.36}
 	jsonValue, _ := json.Marshal(values)
 	resp, err := http.Post(fmt.Sprintf("%s/v1/transaction", ts.URL), "application/json", bytes.NewBuffer(jsonValue))
 
@@ -103,3 +103,31 @@ func TestInsertTransaction(t *testing.T) {
 
 }
 
+func TestGetType(t *testing.T) {
+	conn := before()
+
+	ts := httptest.NewServer(setupServer(conn))
+
+	defer ts.Close()
+	defer conn.Close()
+
+	resp, err := http.Get(fmt.Sprintf("%s/v1/operationtypes", ts.URL))
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	if resp.StatusCode != 200 {
+		t.Fatalf("Expected status code 200, got %v", resp.StatusCode)
+	}
+
+
+	types := make([]account.OperationType, 0)
+	err = json.NewDecoder(resp.Body).Decode(&types)
+	if err != nil {
+		t.Fatalf("Expected account Body")
+	}
+	if  len(types) != 4{
+		t.Errorf("expected %d, got %d", 4, len(types))
+	}
+
+}

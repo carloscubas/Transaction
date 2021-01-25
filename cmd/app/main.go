@@ -42,7 +42,7 @@ func main() {
 		panic(err)
 	}
 
-	dataMigration(sc.Db.Database, sc.Db.Connection, sc.Db.Datamigration)
+	dataMigration(sc.Db.Database, sc.Db.Connection)
 
 	gin.SetMode(sc.Server.Mode)
 	router := gin.New()
@@ -70,22 +70,20 @@ func main() {
 
 }
 
-func dataMigration(database string, connection string, start bool){
+func dataMigration(database string, connection string) {
 
-	if start {
-		log.Info(fmt.Sprintf("Data Migration Start: %s://%s", database, connection))
+	log.Info(fmt.Sprintf("Data Migration Start: %s://%s", database, connection))
 
-		m, err := migrate.New(
-			"file://db/migrations",
-			fmt.Sprintf("%s://%s", database, connection),
-		)
-		m.Steps(2)
+	m, err := migrate.New(
+		"file://db/migrations",
+		fmt.Sprintf("%s://%s", database, connection),
+	)
+	m.Steps(2)
 
-		if err != nil {
-			panic(err)
-		}
-
-		log.Info("Data Migration Finished")
+	if err != nil {
+		panic(err)
 	}
+
+	log.Info("Data Migration Finished")
 
 }

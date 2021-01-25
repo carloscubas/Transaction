@@ -11,6 +11,7 @@ type Repository interface {
 	InsertTransactions(transaction Transaction) (*Transaction, error)
 	GetAccount(id int64) (*Account, error)
 	GetOperationType(id int64) (*OperationType, error)
+	GetOperationTypes() ([]OperationType, error)
 }
 
 type Account struct {

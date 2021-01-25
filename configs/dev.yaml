@@ -5,7 +5,6 @@ server:
     mode: "debug"
 
 db:
-    datamigration: true
     database: "mysql"
     connection: "root:@tcp(127.0.0.1:3306)/db"
 

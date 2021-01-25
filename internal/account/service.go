@@ -8,13 +8,13 @@ const (
 
 // Service struct to hold repository
 type Service struct {
-	repo   Repository
+	repo Repository
 }
 
 // NewService create service struct
 func NewService(repository Repository) *Service {
 	return &Service{
-		repo:   repository,
+		repo: repository,
 	}
 }
 
@@ -48,6 +48,14 @@ func (s Service) GetAccount(id int64) (*Account, error) {
 		return nil, err
 	}
 	return account, nil
+}
+
+func (s Service) GetOperationsType() ([]OperationType, error) {
+	types, err := s.repo.GetOperationTypes()
+	if err != nil {
+		return nil, err
+	}
+	return types, nil
 }
 
 func checkTypeOperation(typeOperator string, transaction Transaction) Transaction {
