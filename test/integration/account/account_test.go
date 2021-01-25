@@ -11,9 +11,12 @@ import (
 )
 
 func TestGetAccount(t *testing.T) {
-	ts := httptest.NewServer(setupServer())
+
+	conn := before()
+	ts := httptest.NewServer(setupServer(conn))
 
 	defer ts.Close()
+	defer conn.Close()
 
 	resp, err := http.Get(fmt.Sprintf("%s/v1/accounts/1", ts.URL))
 	if err != nil {
@@ -33,11 +36,15 @@ func TestGetAccount(t *testing.T) {
 	if ac.DocumentNumber != "123456" {
 		t.Fatalf("Expected expected, got %s but %s", "123456", ac.DocumentNumber)
 	}
+
 }
 func TestInsertAccount(t *testing.T) {
-	ts := httptest.NewServer(setupServer())
+
+	conn := before()
+	ts := httptest.NewServer(setupServer(conn))
 
 	defer ts.Close()
+	defer conn.Close()
 
 	values := map[string]string{"DocumentNumber" : "654321"}
 	jsonValue, _ := json.Marshal(values)
@@ -60,12 +67,17 @@ func TestInsertAccount(t *testing.T) {
 	if ac.DocumentNumber != "654321" {
 		t.Fatalf("Expected expected, got %s but %s", "654321", ac.DocumentNumber)
 	}
+
 }
 
 func TestInsertTransaction(t *testing.T) {
-	ts := httptest.NewServer(setupServer())
+
+	conn := before()
+
+	ts := httptest.NewServer(setupServer(conn))
 
 	defer ts.Close()
+	defer conn.Close()
 
 	values := map[string]interface{}{"AccountID" : 1, "OperationsTypeID" : 1, "Amount" : 20.36}
 	jsonValue, _ := json.Marshal(values)
@@ -88,5 +100,6 @@ func TestInsertTransaction(t *testing.T) {
 	if tr.Amount != -20.36 {
 		t.Fatalf("Expected expected, got %f but %f", -20.36, tr.Amount)
 	}
+
 }
 

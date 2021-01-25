@@ -7,7 +7,7 @@ import (
 )
 
 // TestLoadServiceConfig ...
-func TestLoadServiceConfig(t *testing.T) {
+func TestConfig(t *testing.T) {
 	tmpFile, err := ioutil.TempFile(os.TempDir(), "*")
 	if err != nil {
 		t.Error("Cannot create temporary file", err)
@@ -15,22 +15,15 @@ func TestLoadServiceConfig(t *testing.T) {
 	defer os.Remove(tmpFile.Name())
 
 	// yaml test
-	input := []byte(`service_name: "iam"
-
-log_level: "DEBUG"
-
-log_dump: false
-
-profiler_enabled: false
-
-swagger_enabled: true
+	input := []byte(`service_name: "transaction"
 
 server:
     address: ":8080"
-    write_timeout: "15s"
-    read_timeout: "15s"
-    idle_timeout: "1m"
-    shutdown_timeout: "30s"`)
+    mode: "debug"
+
+db:
+    database: "mysql"
+    connection: "user:password@tcp(127.0.0.1:3306)/db"`)
 
 	if _, err = tmpFile.Write(input); err != nil {
 		t.Error("Failed to write to temporary file", err)
@@ -48,9 +41,9 @@ server:
 }
 
 // TestLoadServiceConfigBadPath ...
-func TestLoadServiceConfigBadPath(t *testing.T) {
+func TestConfigBadPath(t *testing.T) {
 
-	_, err := LoadServiceConfig("ABC")
+	_, err := LoadServiceConfig("CDE")
 	if err != nil {
 		t.Log("Wrong file")
 	}
@@ -58,7 +51,7 @@ func TestLoadServiceConfigBadPath(t *testing.T) {
 }
 
 // TestLoadServiceConfigBadBody ...
-func TestLoadServiceConfigBadBody(t *testing.T) {
+func TestConfigBadBody(t *testing.T) {
 	tmpFile, err := ioutil.TempFile(os.TempDir(), "*")
 	if err != nil {
 		t.Error("Cannot create temporary file", err)

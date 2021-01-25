@@ -4,7 +4,28 @@
 
 This project is a small example of a REST API using GoLang.
 
+## Run 
+
+### Local environment
+
+        go run cmd/app/main.go
+        
+### Docker environment
+
+        docker-compose -f docker/docker-compose.dev.yaml up
+
+## Tests
+
+### Unit test
+
+        go test -v ./...
+
+### Integration tests
+
+        docker-compose -f docker/docker-compose.test.yaml run test
+
 ### Generate Mock
+
         mockgen --build_flags=--mod=vendor -package account -destination=./mock.go -source=./model.go
         
 ### References
@@ -16,3 +37,4 @@ This project is a small example of a REST API using GoLang.
     - https://github.com/golang-migrate/migrate
     - https://semaphoreci.com/community/tutorials/test-driven-development-of-go-web-applications-with-gin
     - https://kpat.io/2019/06/testing-with-gin/
+    - https://github.com/1000kit/docker-h2

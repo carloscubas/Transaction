@@ -4,11 +4,12 @@ import (
 	"testing"
 	"time"
 
+	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jmrobles/h2go"
 )
 
 func TestInsertTransaction(t *testing.T) {
-	conn := before()
+	conn := Before()
 	repository, _ := NewRepository(conn)
 
 	transaction := Transaction{
@@ -25,11 +26,10 @@ func TestInsertTransaction(t *testing.T) {
 		t.Errorf("expected %f, got %f", -26.0, response.Amount)
 	}
 
-	after(conn)
 }
 
 func TestInsertAccount(t *testing.T) {
-	conn := before()
+	conn := Before()
 	repository, _ := NewRepository(conn)
 
 	account := Account{
@@ -45,7 +45,7 @@ func TestInsertAccount(t *testing.T) {
 }
 
 func TestGetAccount(t *testing.T) {
-	conn := before()
+	conn := Before()
 	repository, _ := NewRepository(conn)
 
 	service := NewService(repository)

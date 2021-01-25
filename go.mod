@@ -14,9 +14,9 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang-migrate/migrate v3.5.4+incompatible // indirect
 	github.com/golang-migrate/migrate/v4 v4.14.1
-	github.com/golang/mock v1.4.4
-	github.com/google/go-github v17.0.0+incompatible
-	github.com/gorilla/mux v1.7.4
+	github.com/golang/mock v1.4.4 // indirect
+	github.com/google/go-github v17.0.0+incompatible // indirect
+	github.com/gorilla/mux v1.7.4 // indirect
 	github.com/jmrobles/h2go v0.5.0
 	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
