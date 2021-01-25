@@ -47,7 +47,7 @@ func TestInsertTransactionRepository(t *testing.T) {
 		EventData:       time.Now(),
 	}
 
-	response, _ := repository.InsertTransactions(transaction)
+	response, _ := repository.InsertTransaction(transaction)
 	if response.Amount != 23.68 {
 		t.Errorf("expected %f, got %f", -23.68, response.Amount)
 	}

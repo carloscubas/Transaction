@@ -8,12 +8,13 @@ import (
 
 type Repository interface {
 	InsertAccount(account Account) (*Account, error)
-	InsertTransactions(transaction Transaction) (*Transaction, error)
+	InsertTransaction(transaction Transaction) (*Transaction, error)
 	GetAccount(id int64) (*Account, error)
 	GetOperationType(id int64) (*OperationType, error)
 	GetOperationTypes() ([]OperationType, error)
 }
 
+// Account is a structure that represents the Account request.
 type Account struct {
 	Id             int64  `json:"Account_ID"`
 	DocumentNumber string `json:"DocumentNumber"`
@@ -25,12 +26,14 @@ func (t Account) validate() error {
 	)
 }
 
+// OperationType is a structure that represents the OperationType request.
 type OperationType struct {
 	Id          int64  `json:"OperationType_ID"`
 	Description string `json:"Description"`
 	Type        string `json:"OperationType"`
 }
 
+// Transaction is a structure that represents the Transaction request.
 type Transaction struct {
 	Id              int64     `json:"TransactionID"`
 	AccountId       int64     `json:"AccountID"`

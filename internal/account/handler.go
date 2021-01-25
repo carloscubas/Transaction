@@ -21,6 +21,14 @@ func NewHandler(s *Service, l *zap.Logger) *Handler {
 	return &Handler{svc: s, logger: l}
 }
 
+// NewAccounts ...
+// ShowEntity godoc
+// @Summary Get NewAccounts
+// @Description NewAccounts endpoint save a new account
+// @Produce  json
+// @Success 200 {object} AccountResponse
+// @Failure 400 {object} middleware.HTTPError
+// @Router /v1/account [post]
 func (h Handler) NewAccounts(c *gin.Context) {
 	var account Account
 
@@ -55,6 +63,14 @@ func (h Handler) NewAccounts(c *gin.Context) {
 
 }
 
+// NewTransaction ...
+// ShowEntity godoc
+// @Summary Post NewTransaction
+// @Description NewTransaction endpoint save a new transaction
+// @Produce  json
+// @Success 200 {object} TransactionResponse
+// @Failure 400 {object} middleware.HTTPError
+// @Router /v1/transaction [post]
 func (h Handler) NewTransaction(c *gin.Context) {
 
 	var transaction Transaction
@@ -86,6 +102,15 @@ func (h Handler) NewTransaction(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// GetAccounts ...
+// ShowEntity godoc
+// @Summary Get GetAccounts
+// @Description GetAccounts endpoint get account
+// @Param id query id true "idAccount"
+// @Produce  json
+// @Success 200 {object} AccountResponse
+// @Failure 400 {object} middleware.HTTPError
+// @Router /v1/accounts/:accountID [get]
 func (h Handler) GetAccounts(c *gin.Context) {
 	idAccount := c.Param("accountID")
 
@@ -109,6 +134,14 @@ func (h Handler) GetAccounts(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// GetOperationsTypes ...
+// ShowEntity godoc
+// @Summary Get GetOperationsTypes
+// @Description GetOperationsTypes endpoint get all operations type
+// @Produce  json
+// @Success 200 {object} array OperationTypeResponse
+// @Failure 400 {object} middleware.HTTPError
+// @Router /v1/operationtypes[get]
 func (h Handler) GetOperationsTypes(c *gin.Context) {
 
 	response, err := h.svc.GetOperationsType()

@@ -16,6 +16,7 @@ func NewRepository(db *sql.DB) (*RepositoryDB, error) {
 	}, nil
 }
 
+// InsertAccount insert the new account in database
 func (r *RepositoryDB) InsertAccount(account Account) (*Account, error) {
 	stmt, err := r.db.Prepare("insert into Accounts(Document_Number) values (?)")
 	if err != nil {
@@ -37,7 +38,8 @@ func (r *RepositoryDB) InsertAccount(account Account) (*Account, error) {
 	return &account, nil
 }
 
-func (r *RepositoryDB) InsertTransactions(transaction Transaction) (*Transaction, error) {
+// InsertTransaction insert the new transaction in database
+func (r *RepositoryDB) InsertTransaction(transaction Transaction) (*Transaction, error) {
 	stmt, err := r.db.Prepare("insert into Transactions(Account_ID, OperationsType_ID, Amount, EventDate) values (?, ?, ?, ?)")
 	if err != nil {
 		return nil, err
@@ -58,6 +60,7 @@ func (r *RepositoryDB) InsertTransactions(transaction Transaction) (*Transaction
 	return &transaction, nil
 }
 
+// GetAccount brings the account from within the database.
 func (r *RepositoryDB) GetAccount(id int64) (*Account, error) {
 
 	row := r.db.QueryRow(fmt.Sprintf("select * from Accounts where Account_ID = %d;", id))
@@ -71,6 +74,7 @@ func (r *RepositoryDB) GetAccount(id int64) (*Account, error) {
 	return &account, nil
 }
 
+// GetOperationType brings the operation type from within the database.
 func (r *RepositoryDB) GetOperationType(id int64) (*OperationType, error) {
 
 	row := r.db.QueryRow(fmt.Sprintf("select * from OperationsTypes where OperationsType_ID = %d;", id))
@@ -85,6 +89,7 @@ func (r *RepositoryDB) GetOperationType(id int64) (*OperationType, error) {
 	return &operationType, nil
 }
 
+// GetOperationTypes brings all operation type from within the database.
 func(r *RepositoryDB) GetOperationTypes()([]OperationType, error){
 
 	var operationsTypes []OperationType
