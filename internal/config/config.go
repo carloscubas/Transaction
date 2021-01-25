@@ -20,8 +20,8 @@ type serverInfo struct {
 }
 
 type dbInfo struct {
-	Database      string `envconfig:"API_DB_DATABASE" yaml:"database" json:"database"`
-	Connection    string `envconfig:"API_DB_CONNECTION" yaml:"connection" json:"connection"`
+	Database   string `envconfig:"API_DB_DATABASE" yaml:"database" json:"database"`
+	Connection string `envconfig:"API_DB_CONNECTION" yaml:"connection" json:"connection"`
 }
 
 func LoadServiceConfig(configFile string) (*ServiceConfig, error) {

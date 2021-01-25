@@ -12,6 +12,7 @@ type Repository interface {
 	GetAccount(id int64) (*Account, error)
 	GetOperationType(id int64) (*OperationType, error)
 	GetOperationTypes() ([]OperationType, error)
+	GetTransactions() ([]TransactionResponse, error)
 }
 
 // Account is a structure that represents the Account request.
@@ -40,6 +41,12 @@ type Transaction struct {
 	OperationTypeId int64     `json:"OperationsTypeID"`
 	Amount          float64   `json:"Amount"`
 	EventData       time.Time `json:"EventDate"`
+}
+
+type TransactionResponse struct {
+	DocumentNumber string  `json:"Document"`
+	Description    string  `json:"Description"`
+	Amount         float64 `json:"Amount"`
 }
 
 func (t Transaction) validate() error {

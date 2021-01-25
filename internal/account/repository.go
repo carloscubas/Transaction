@@ -90,7 +90,7 @@ func (r *RepositoryDB) GetOperationType(id int64) (*OperationType, error) {
 }
 
 // GetOperationTypes brings all operation type from within the database.
-func(r *RepositoryDB) GetOperationTypes()([]OperationType, error){
+func (r *RepositoryDB) GetOperationTypes() ([]OperationType, error) {
 
 	var operationsTypes []OperationType
 
@@ -108,4 +108,25 @@ func(r *RepositoryDB) GetOperationTypes()([]OperationType, error){
 		operationsTypes = append(operationsTypes, operationType)
 	}
 	return operationsTypes, nil
+}
+
+func (r *RepositoryDB) GetTransactions() ([]TransactionResponse, error) {
+	var transactions []TransactionResponse
+
+	rows, err := r.db.Query("select a.Document_Number as DocumentNumber, " +
+		"t.Amount as Amount, ot.Description as Description from Transactions t join Accounts a " +
+		"ON a.Account_ID = t.Account_ID join OperationsTypes ot  ON t.OperationsType_ID = ot.OperationsType_ID ")
+	if err != nil {
+		return nil, err
+	}
+
+	var transactionResponse TransactionResponse
+	for rows.Next() {
+		err := rows.Scan(&transactionResponse.DocumentNumber, &transactionResponse.Amount, &transactionResponse.Description)
+		if err != nil {
+			return nil, err
+		}
+		transactions = append(transactions, transactionResponse)
+	}
+	return transactions, nil
 }

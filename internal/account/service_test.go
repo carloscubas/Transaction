@@ -71,7 +71,7 @@ func TestGetOperationTypes(t *testing.T) {
 	service := NewService(repository)
 	response, _ := service.GetOperationsType()
 
-	if  len(response) != 4{
+	if len(response) != 4 {
 		t.Errorf("expected %d, got %d", 4, len(response))
 	}
 }

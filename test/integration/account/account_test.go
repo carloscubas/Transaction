@@ -120,13 +120,12 @@ func TestGetType(t *testing.T) {
 		t.Fatalf("Expected status code 200, got %v", resp.StatusCode)
 	}
 
-
 	types := make([]account.OperationType, 0)
 	err = json.NewDecoder(resp.Body).Decode(&types)
 	if err != nil {
 		t.Fatalf("Expected account Body")
 	}
-	if  len(types) != 4{
+	if len(types) != 4 {
 		t.Errorf("expected %d, got %d", 4, len(types))
 	}
 

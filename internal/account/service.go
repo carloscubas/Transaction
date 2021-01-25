@@ -62,6 +62,15 @@ func (s Service) GetOperationsType() ([]OperationType, error) {
 	return types, nil
 }
 
+func (s Service) GetTransactions() ([]TransactionResponse, error) {
+	transactions, err := s.repo.GetTransactions()
+	if err != nil {
+		return nil, err
+	}
+	return transactions, nil
+
+}
+
 // checkTypeOperation check is amount is positive or negative
 func checkTypeOperation(typeOperator string, transaction Transaction) Transaction {
 	if strings.Compare(typeOperator, DEBIT) == 0 {

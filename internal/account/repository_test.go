@@ -86,12 +86,11 @@ func TestGetOperationTypeListRepository(t *testing.T) {
 	repository, _ := NewRepository(conn)
 	response, _ := repository.GetOperationTypes()
 
-	if  len(response) != 4{
+	if len(response) != 4 {
 		t.Errorf("expected %d, got %d", 4, len(response))
 	}
 
 }
-
 
 func Before() *sql.DB {
 	var ddl [17]string
