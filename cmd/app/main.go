@@ -78,11 +78,15 @@ func dataMigration(database string, connection string) {
 		"file://db/migrations",
 		fmt.Sprintf("%s://%s", database, connection),
 	)
-	m.Steps(2)
-
 	if err != nil {
 		panic(err)
 	}
+
+	err = m.Steps(2)
+	if err != nil {
+		panic(err)
+	}
+
 
 	log.Info("Data Migration Finished")
 

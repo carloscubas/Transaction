@@ -2,10 +2,7 @@ package account
 
 import (
 	"database/sql"
-	"log"
-	"os"
 	"transaction/internal/account"
-	"transaction/internal/config"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
@@ -30,6 +27,7 @@ func setupServer(db *sql.DB) *gin.Engine {
 	return router
 }
 
+/*
 func before() *sql.DB {
 
 	var ddl [17]string
@@ -81,3 +79,5 @@ func before() *sql.DB {
 func after(conn *sql.DB) {
 	conn.Close()
 }
+
+ */
