@@ -39,7 +39,7 @@ func TestInsertAccountRepository(t *testing.T) {
 		log.Fatalf("Can't insert in Database: %s", err)
 	}
 
-	if Account.Id != 2 {
+	if Account.Id != 1 {
 		t.Errorf("expected %d, got %d", 1, Account.Id)
 	}
 

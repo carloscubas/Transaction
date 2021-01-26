@@ -7,6 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/jmrobles/h2go"
 )
 
 type DbTestConfig struct {
@@ -47,8 +48,8 @@ func NewDbTestConfig(dataBase string, connection string) *DbTestConfig {
 		database = os.Getenv("API_DB_DATABASE")
 		dbConnection = os.Getenv("API_DB_CONNECTION")
 	} else {
-		database = dataBase
-		dbConnection = connection
+		database = "h2"
+		dbConnection = "h2://sa@localhost/testdb?mem=true"
 	}
 
 	conn, err := sql.Open(database, dbConnection)
