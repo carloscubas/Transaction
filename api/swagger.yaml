@@ -21,6 +21,7 @@ definitions:
     type: object
 info:
   contact: {}
+  license: {}
 paths:
   /v1/account:
     post:

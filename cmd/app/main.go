@@ -5,12 +5,17 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"time"
 	"transaction/internal/account"
 	"transaction/internal/config"
+
+	"github.com/gin-contrib/cors"
 
 	httpLogger "github.com/elafarge/gin-http-logger"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -18,10 +23,8 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
+	// _ "github.com/swaggo/gin-swagger/example/basic/docs"
 
-	_ "github.com/swaggo/gin-swagger/example/basic/docs"
 )
 
 func main() {
@@ -52,6 +55,10 @@ func main() {
 	gin.SetMode(sc.Server.Mode)
 	router := gin.New()
 
+
+	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json") // The url pointing to API definition
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
+
 	httpLoggerConf := httpLogger.AccessLoggerConfig{
 		LogrusLogger:   log.StandardLogger(),
 		BodyLogPolicy:  httpLogger.LogBodiesOnErrors,
@@ -60,14 +67,20 @@ func main() {
 		RetryInterval:  5,
 	}
 
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"PUT", "GET", "POST", "DELETE", "PATCH", "OPTIONS"},
+		AllowHeaders:     []string{"Authorization", "Content-Type", "*"},
+		ExposeHeaders:    []string{"PUT", "GET", "POST", "DELETE", "PATCH", "OPTIONS"},
+		MaxAge: 12 * time.Hour,
+	}))
 	router.Use(httpLogger.New(httpLoggerConf))
 
 	router.NoRoute(func(c *gin.Context) {
 		c.AbortWithStatus(http.StatusNotFound)
 	})
 
-	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json") // The url pointing to API definition
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
+
 
 	repo, err := account.NewRepository(db)
 	if err != nil {

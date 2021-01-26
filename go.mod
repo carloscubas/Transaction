@@ -6,6 +6,7 @@ require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/elafarge/gin-http-logger v2.0.2+incompatible
+	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-openapi/spec v0.20.2 // indirect
 	github.com/go-openapi/swag v0.19.13 // indirect
@@ -28,8 +29,9 @@ require (
 	github.com/sirupsen/logrus v1.7.0
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
 	github.com/swaggo/gin-swagger v1.3.0
-	github.com/swaggo/http-swagger v1.0.0
+	github.com/swaggo/http-swagger v1.0.0 // indirect
 	github.com/swaggo/swag v1.7.0
+	github.com/swaggo/swag/example/celler v0.0.0-20201209092904-3d90fc0a5c6e
 	github.com/ugorji/go v1.2.3 // indirect
 	github.com/urfave/cli v1.22.5 // indirect
 	go.uber.org/zap v1.16.0

@@ -9,6 +9,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+
+	_ "github.com/swaggo/swag/example/celler/httputil"
 )
 
 // Handler struct
