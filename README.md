@@ -2,7 +2,13 @@
 
 ## Objectives
 
-This project is a small example of a REST API using GoLang.
+This project is a small example of a REST API using GoLang. Inside scripts folder there are some examples:
+
+- create new account (scripts/insertAccount.sh)
+- create new transaction (scripts/insertTransaction.sh)
+- get exist account (scripts/getAccount.sh)
+- get all operation types (scripts/getOperationTypes.sh)
+
 
 ## Run 
 Before Run app open configs/dev.yaml file and rewrite de data.
@@ -18,7 +24,7 @@ Before Run app open configs/dev.yaml file and rewrite de data.
 
 ### Unit test
 
-        go test -v -race -cover ./test/integration/account/ && go test -v -race -cover ./internal/account/
+        go test -v -cover $$(go list ./... | grep -v /vendor/)
 
 ### Docker Unit tests
 
@@ -34,3 +40,4 @@ Before Run app open configs/dev.yaml file and rewrite de data.
     - https://semaphoreci.com/community/tutorials/test-driven-development-of-go-web-applications-with-gin
     - https://kpat.io/2019/06/testing-with-gin/
     - https://github.com/1000kit/docker-h2
+    - https://golang.org/pkg/testing/

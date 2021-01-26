@@ -36,9 +36,9 @@ func NewDbTestConfig(dataBase string, connection string) *DbTestConfig {
 	ddlBefore[13] = "INSERT INTO OperationsTypes (OperationsType_ID, Description,OperationsType) VALUES (4, 'PAGAMENTO','CREDIT');"
 
 	var ddlAfter [3]string
-	ddlAfter[0] = "Delete from Transactions;"
-	ddlAfter[1] = "Delete from OperationsTypes;"
-	ddlAfter[2] = "Delete from Accounts;"
+	ddlBefore[0] = "DROP TABLE IF EXISTS Transactions;"
+	ddlBefore[1] = "DROP TABLE IF EXISTS OperationsTypes;"
+	ddlBefore[2] = "DROP TABLE IF EXISTS Accounts;"
 
 	var database string
 	var dbConnection string
@@ -73,5 +73,4 @@ func (d DbTestConfig) After() {
 	for i := 0; i < len(d.ddlAfter); i++ {
 		d.Conn.Exec(d.ddlAfter[i])
 	}
-	d.Conn.Close()
 }

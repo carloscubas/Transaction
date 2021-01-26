@@ -14,98 +14,76 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-func init (){
+func TestService(t *testing.T) {
 	sc, _ := config.LoadServiceConfig("../../configs/dev.yaml")
-	database = sc.Db.Database
-	connection = sc.Db.Connection
-}
-
-func TestInsertTransaction(t *testing.T) {
-
-	setup := test.NewDbTestConfig(database, connection)
+	setup := test.NewDbTestConfig(sc.Db.Database, sc.Db.Connection)
+	repository, _ := NewRepository(setup.Conn)
 	setup.Before()
 
-	repository, _ := NewRepository(setup.Conn)
+	t.Run("TestInsertTransaction", func(t *testing.T) {
 
-	transaction := Transaction{
-		AccountId:       1,
-		OperationTypeId: 1,
-		Amount:          26.0,
-		EventData:       time.Now(),
-	}
+		transaction := Transaction{
+			AccountId:       1,
+			OperationTypeId: 1,
+			Amount:          26.0,
+			EventData:       time.Now(),
+		}
 
-	service := NewService(repository)
-	response, _ := service.InsertTransaction(transaction)
+		service := NewService(repository)
+		response, _ := service.InsertTransaction(transaction)
 
-	if response.Amount != -26.0 {
-		t.Errorf("expected %f, got %f", -26.0, response.Amount)
-	}
-	setup.After()
-}
+		if response.Amount != -26.0 {
+			t.Errorf("expected %f, got %f", -26.0, response.Amount)
+		}
 
-func TestInsertAccount(t *testing.T) {
-	setup := test.NewDbTestConfig(database, connection)
-	setup.Before()
+	})
+	t.Run("TestInsertAccount", func(t *testing.T) {
 
-	repository, _ := NewRepository(setup.Conn)
+		account := Account{
+			DocumentNumber: "578945558",
+		}
 
-	account := Account{
-		DocumentNumber: "578945558",
-	}
+		service := NewService(repository)
+		response, _ := service.InsertAccount(account)
 
-	service := NewService(repository)
-	response, _ := service.InsertAccount(account)
+		if response.DocumentNumber != "578945558" {
+			t.Errorf("expected %s, got %s", "578945558", response.DocumentNumber)
+		}
 
-	if response.DocumentNumber != "578945558" {
-		t.Errorf("expected %s, got %s", "578945558", response.DocumentNumber)
-	}
+	})
+	t.Run("TestGetAccount", func(t *testing.T) {
 
-	setup.After()
-}
+		service := NewService(repository)
+		response, _ := service.GetAccount(1)
 
-func TestGetAccount(t *testing.T) {
+		if response.DocumentNumber != "123456" {
+			t.Errorf("expected %s, got %s", "123456", response.DocumentNumber)
+		}
 
-	setup := test.NewDbTestConfig(database, connection)
-	setup.Before()
+	})
+	t.Run("TestGetOperationTypes", func(t *testing.T) {
 
-	repository, _ := NewRepository(setup.Conn)
+		service := NewService(repository)
+		response, _ := service.GetOperationsType()
 
-	service := NewService(repository)
-	response, _ := service.GetAccount(1)
+		if  len(response) != 4{
+			t.Errorf("expected %d, got %d", 4, len(response))
+		}
 
-	if response.DocumentNumber != "123456" {
-		t.Errorf("expected %s, got %s", "123456", response.DocumentNumber)
-	}
+	})
+	t.Run("TestCheckTypeOperation", func(t *testing.T) {
+		transaction := Transaction{
+			AccountId:       1,
+			OperationTypeId: 1,
+			Amount:          26.30,
+		}
 
-	setup.After()
-}
-
-func TestGetOperationTypes(t *testing.T) {
-
-	setup := test.NewDbTestConfig(database, connection)
-	setup.Before()
-
-	repository, _ := NewRepository(setup.Conn)
-
-	service := NewService(repository)
-	response, _ := service.GetOperationsType()
-
-	if  len(response) != 4{
-		t.Errorf("expected %d, got %d", 4, len(response))
-	}
+		result := checkTypeOperation(DEBIT, transaction)
+		if result.Amount != -26.30 {
+			t.Errorf("expected %f, got %f", -26.30, result.Amount)
+		}
+	})
 
 	setup.After()
-}
-
-func TestCheckTypeOperation(t *testing.T) {
-	transaction := Transaction{
-		AccountId:       1,
-		OperationTypeId: 1,
-		Amount:          26.30,
-	}
-
-	result := checkTypeOperation(DEBIT, transaction)
-	if result.Amount != -26.30 {
-		t.Errorf("expected %f, got %f", -26.30, result.Amount)
-	}
+	setup.Conn.Close()
 }

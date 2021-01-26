@@ -1,23 +1,18 @@
 version: '3.7'
 
 services:
-    mysqltest:
-        image: mysql:5.7
+    mysql-test:
+        image: mysql
         restart: always
         environment:
-            MYSQL_TCP_PORT: 3309
             MYSQL_DATABASE: 'db'
             MYSQL_USER: 'user'
             MYSQL_PASSWORD: 'password'
             MYSQL_ROOT_PASSWORD: 'password'
         ports:
-            - '3309:3309'
+            - '3309:3306'
         networks:
             - test-network
-        expose:
-            - '3309'
-        volumes:
-            - my-db:/var/lib/mysql
     test:
         image: golang:1.15
         environment:
@@ -29,10 +24,7 @@ services:
             - $PWD:/go/src/account-test
         working_dir: /go/src/account-test
         depends_on:
-            - mysqltest
-        command: bash -c "go test -v -race -cover ./test/integration/account/ && go test -v -race -cover ./internal/account/"
-volumes:
-    my-db:
-
+            - mysql-test
+        command: bash -c "go test -v -cover $$(go list ./... | grep -v /vendor/)"
 networks:
     test-network:
