@@ -18,19 +18,11 @@ Before Run app open configs/dev.yaml file and rewrite de data.
 
 ### Unit test
 
-        go test -v ./...
+        go test -v -race -cover ./test/integration/account/ && go test -v -race -cover ./internal/account/
 
-### Unit tes covarage
-        
-        go test -v -race -cover $(go list ./... | grep -v /vendor/)
-
-### Integration tests
+### Docker Unit tests
 
         docker-compose -f docker/docker-compose.test.yaml run test
-
-### Generate Mock
-
-        mockgen --build_flags=--mod=vendor -package account -destination=./mock.go -source=./model.go
         
 ### References
     - https://github.com/sbecker/gin-api-demo

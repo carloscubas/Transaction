@@ -6,7 +6,7 @@ server:
 
 db:
     database: "mysql"
-    connection: "root:@tcp(127.0.0.1:3306)/db"
+    connection: "user:password@tcp(127.0.0.1:3308)/db"
 
 
 

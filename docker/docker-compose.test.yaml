@@ -30,7 +30,7 @@ services:
         working_dir: /go/src/account-test
         depends_on:
             - mysqltest
-        command: bash -c "go test -v -cover $$(go list ./... | grep -v /vendor/)"
+        command: bash -c "go test -v -race -cover ./test/integration/account/ && go test -v -race -cover ./internal/account/"
 volumes:
     my-db:
 

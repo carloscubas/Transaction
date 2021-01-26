@@ -1,18 +1,31 @@
 package account
 
 import (
+	_ "database/sql"
 	"testing"
 	"time"
+	"transaction/internal/config"
+	"transaction/test"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jmrobles/h2go"
+
+	_ "github.com/golang-migrate/migrate/v4/database/mysql"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-func TestInsertTransaction(t *testing.T) {
-	conn := Before()
-	defer conn.Close()
+func init (){
+	sc, _ := config.LoadServiceConfig("../../configs/dev.yaml")
+	database = sc.Db.Database
+	connection = sc.Db.Connection
+}
 
-	repository, _ := NewRepository(conn)
+func TestInsertTransaction(t *testing.T) {
+
+	setup := test.NewDbTestConfig(database, connection)
+	setup.Before()
+
+	repository, _ := NewRepository(setup.Conn)
 
 	transaction := Transaction{
 		AccountId:       1,
@@ -27,14 +40,14 @@ func TestInsertTransaction(t *testing.T) {
 	if response.Amount != -26.0 {
 		t.Errorf("expected %f, got %f", -26.0, response.Amount)
 	}
-
+	setup.After()
 }
 
 func TestInsertAccount(t *testing.T) {
-	conn := Before()
-	defer conn.Close()
+	setup := test.NewDbTestConfig(database, connection)
+	setup.Before()
 
-	repository, _ := NewRepository(conn)
+	repository, _ := NewRepository(setup.Conn)
 
 	account := Account{
 		DocumentNumber: "578945558",
@@ -46,13 +59,16 @@ func TestInsertAccount(t *testing.T) {
 	if response.DocumentNumber != "578945558" {
 		t.Errorf("expected %s, got %s", "578945558", response.DocumentNumber)
 	}
+
+	setup.After()
 }
 
 func TestGetAccount(t *testing.T) {
-	conn := Before()
-	defer conn.Close()
 
-	repository, _ := NewRepository(conn)
+	setup := test.NewDbTestConfig(database, connection)
+	setup.Before()
+
+	repository, _ := NewRepository(setup.Conn)
 
 	service := NewService(repository)
 	response, _ := service.GetAccount(1)
@@ -60,13 +76,16 @@ func TestGetAccount(t *testing.T) {
 	if response.DocumentNumber != "123456" {
 		t.Errorf("expected %s, got %s", "123456", response.DocumentNumber)
 	}
+
+	setup.After()
 }
 
 func TestGetOperationTypes(t *testing.T) {
-	conn := Before()
-	defer conn.Close()
 
-	repository, _ := NewRepository(conn)
+	setup := test.NewDbTestConfig(database, connection)
+	setup.Before()
+
+	repository, _ := NewRepository(setup.Conn)
 
 	service := NewService(repository)
 	response, _ := service.GetOperationsType()
@@ -74,6 +93,8 @@ func TestGetOperationTypes(t *testing.T) {
 	if  len(response) != 4{
 		t.Errorf("expected %d, got %d", 4, len(response))
 	}
+
+	setup.After()
 }
 
 func TestCheckTypeOperation(t *testing.T) {
