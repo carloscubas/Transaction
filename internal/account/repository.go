@@ -109,3 +109,17 @@ func(r *RepositoryDB) GetOperationTypes()([]OperationType, error){
 	}
 	return operationsTypes, nil
 }
+
+func(r *RepositoryDB) InsertLog(log string) error{
+	stmt, err := r.db.Prepare("insert into Log(Description, EventDate) values (?, ?)")
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(log,  time.Now())
+	if err != nil {
+		return err
+	}
+	return nil
+}
+

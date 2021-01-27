@@ -12,9 +12,9 @@ type Config struct {
 }
 
 // NewAPI create API handler
-func NewAPI(config Config, router *gin.Engine, repository Repository) error {
+func NewAPI(config Config, router *gin.Engine, repository Repository, log chan string) error {
 
-	notificationsHandler := NewHandler(NewService(repository), config.Logger)
+	notificationsHandler := NewHandler(NewService(repository), config.Logger, log)
 	SetRoutes(notificationsHandler, config, router)
 	return nil
 }

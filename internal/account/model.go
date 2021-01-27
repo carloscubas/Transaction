@@ -12,6 +12,7 @@ type Repository interface {
 	GetAccount(id int64) (*Account, error)
 	GetOperationType(id int64) (*OperationType, error)
 	GetOperationTypes() ([]OperationType, error)
+	InsertLog(log string) error
 }
 
 // Account is a structure that represents the Account request.

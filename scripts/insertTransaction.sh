@@ -1,5 +1,5 @@
 #!/bin/bash
-curl --location --request POST 'localhost:8080/v1/transaction' \
+curl --location --request POST 'localhost:8090/v1/transaction' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "AccountID" : 1,

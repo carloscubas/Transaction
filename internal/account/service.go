@@ -1,6 +1,8 @@
 package account
 
-import "strings"
+import (
+	"strings"
+)
 
 const (
 	DEBIT = "DEBIT"

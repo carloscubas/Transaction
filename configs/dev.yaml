@@ -1,7 +1,7 @@
 service_name: "transaction"
 
 server:
-    address: ":8080"
+    address: ":8090"
     mode: "debug"
 
 db:

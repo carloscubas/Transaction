@@ -15,10 +15,15 @@ import (
 type Handler struct {
 	svc    *Service
 	logger *zap.Logger
+	log chan string
 }
 
-func NewHandler(s *Service, l *zap.Logger) *Handler {
-	return &Handler{svc: s, logger: l}
+func NewHandler(s *Service, l *zap.Logger, log chan string) *Handler {
+	return &Handler{
+		svc: s,
+		logger: l,
+		log: log,
+	}
 }
 
 // NewAccounts ...
@@ -59,6 +64,8 @@ func (h Handler) NewAccounts(c *gin.Context) {
 		return
 	}
 
+	h.log <- "New accounts"
+
 	c.JSON(http.StatusOK, response)
 
 }
@@ -98,6 +105,8 @@ func (h Handler) NewTransaction(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
 		return
 	}
+	h.log <- "New transactions"
+
 
 	c.JSON(http.StatusOK, response)
 }
@@ -131,6 +140,8 @@ func (h Handler) GetAccounts(c *gin.Context) {
 		return
 	}
 
+	h.log <- "Get Accounts"
+
 	c.JSON(http.StatusOK, response)
 }
 
@@ -149,6 +160,8 @@ func (h Handler) GetOperationsTypes(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
 		return
 	}
+
+	h.log <- "Get Operations Type"
 
 	c.JSON(http.StatusOK, response)
 

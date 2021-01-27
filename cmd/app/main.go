@@ -42,6 +42,8 @@ func main() {
 		panic(err)
 	}
 
+	defer db.Close()
+
 	dataMigration(sc.Db.Database, sc.Db.Connection)
 
 	gin.SetMode(sc.Server.Mode)
@@ -61,12 +63,19 @@ func main() {
 		c.AbortWithStatus(http.StatusNotFound)
 	})
 
+
+
 	repo, err := account.NewRepository(db)
 	if err != nil {
 		panic(err)
 	}
 
-	account.NewAPI(config, router, repo)
+	logs := make(chan string)
+	defer close(logs)
+
+	go logAcess(logs, repo)
+
+	account.NewAPI(config, router, repo, logs)
 
 }
 
@@ -85,5 +94,11 @@ func dataMigration(database string, connection string) {
 	}
 
 	log.Info("Data Migration Finished")
-
 }
+
+func logAcess(logs <-chan string, repository account.Repository) {
+	for log := range logs {
+		repository.InsertLog(fmt.Sprintf("Acesso registrado com sucesso para %s.", log))
+	}
+}
+

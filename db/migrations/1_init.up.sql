@@ -17,6 +17,12 @@ CREATE TABLE Transactions (
                               EventDate DATE
 );
 
+CREATE TABLE Log (
+	Id INTEGER auto_increment primary key,
+	Description varchar(200) NOT NULL,
+	EventDate DATE
+);
+
 ALTER TABLE Transactions ADD CONSTRAINT Transactions_FK_Account FOREIGN KEY (Account_ID) REFERENCES Accounts(Account_ID);
 ALTER TABLE Transactions ADD CONSTRAINT Transactions_FK_OperationsType FOREIGN KEY (OperationsType_ID) REFERENCES OperationsTypes(OperationsType_ID);
 ALTER TABLE Accounts ADD CONSTRAINT Accounts_UN UNIQUE KEY (Document_Number);
