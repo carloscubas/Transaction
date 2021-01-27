@@ -18,12 +18,12 @@ func NewRepository(db *sql.DB) (*RepositoryDB, error) {
 
 // InsertAccount insert the new account in database
 func (r *RepositoryDB) InsertAccount(account Account) (*Account, error) {
-	stmt, err := r.db.Prepare("insert into Accounts(Document_Number) values (?)")
+	stmt, err := r.db.Prepare("insert into Accounts(Document_Number, AvailableCreditLimit) values (?, ?)")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := stmt.Exec(account.DocumentNumber)
+	res, err := stmt.Exec(account.DocumentNumber,account.AvailableCreditLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -37,15 +37,27 @@ func (r *RepositoryDB) InsertAccount(account Account) (*Account, error) {
 
 	return &account, nil
 }
+func (r *RepositoryDB) UpdateAvailableCreditLimitAccount(account *Account) error{
+	stmt, err := r.db.Prepare("update Accounts set AvailableCreditLimit = ? where Account_ID = ?")
+	if err != nil {
+		return  err
+	}
+	_, err = stmt.Exec(account.AvailableCreditLimit, account.Id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 
 // InsertTransaction insert the new transaction in database
 func (r *RepositoryDB) InsertTransaction(transaction Transaction) (*Transaction, error) {
-	stmt, err := r.db.Prepare("insert into Transactions(Account_ID, OperationsType_ID, Amount, EventDate) values (?, ?, ?, ?)")
+	stmt, err := r.db.Prepare("insert into Transactions(Account_ID, OperationsType_ID, Amount, Balance, EventDate) values (?, ?, ?, ?, ?)")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := stmt.Exec(transaction.AccountId, transaction.OperationTypeId, transaction.Amount, time.Now())
+	res, err := stmt.Exec(transaction.AccountId, transaction.OperationTypeId, transaction.Amount, transaction.Amount, time.Now())
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +78,7 @@ func (r *RepositoryDB) GetAccount(id int64) (*Account, error) {
 	row := r.db.QueryRow(fmt.Sprintf("select * from Accounts where Account_ID = %d;", id))
 
 	var account = Account{}
-	err := row.Scan(&account.Id, &account.DocumentNumber)
+	err := row.Scan(&account.Id, &account.DocumentNumber, &account.AvailableCreditLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -109,3 +121,28 @@ func(r *RepositoryDB) GetOperationTypes()([]OperationType, error){
 	}
 	return operationsTypes, nil
 }
+
+func (r *RepositoryDB) GetTransactions(id int64) ([]Transaction, error) {
+	var transactions []Transaction
+
+	fmt.Sprintf("select a.Document_Number as DocumentNumber, t.Amount as Amount, ot.Description as Description from Transactions t join Accounts a \" +\n\t\t\"ON a.Account_ID = t.Account_ID join OperationsTypes ot  ON t.OperationsType_ID = ot.OperationsType_ID where Account_ID =  %d;", id)
+
+	rows, err := r.db.Query("select a.Document_Number as DocumentNumber, " +
+		"t.Amount as Amount, ot.Description as Description from Transactions t join Accounts a " +
+		"ON a.Account_ID = t.Account_ID join OperationsTypes ot  ON t.OperationsType_ID = ot.OperationsType_ID where Account_ID =  ")
+	if err != nil {
+		return nil, err
+	}
+
+	var transaction Transaction
+	for rows.Next() {
+		err := rows.Scan(&transaction.Id, &transaction.AccountId, &transaction.OperationTypeId, &transaction.Amount, &transaction.Balance, &transaction.EventData)
+		if err != nil {
+			return nil, err
+		}
+		transactions = append(transactions, transaction)
+	}
+	return transactions, nil
+}
+
+

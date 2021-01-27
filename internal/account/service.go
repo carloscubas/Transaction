@@ -1,9 +1,13 @@
 package account
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 const (
 	DEBIT = "DEBIT"
+	CREDIT = "CREDIT"
 )
 
 // Service struct to hold repository
@@ -21,12 +25,29 @@ func NewService(repository Repository) *Service {
 // InsertTransaction insert the new transaction
 func (s Service) InsertTransaction(transaction Transaction) (*Transaction, error) {
 
+	account, err := s.GetAccount(transaction.AccountId)
+	if err != nil {
+		return nil, err
+	}
+
 	operation, err := s.repo.GetOperationType(transaction.OperationTypeId)
 	if err != nil {
 		return nil, err
 	}
 
+	if strings.Compare(operation.Type, DEBIT) == 0 && transaction.Amount > account.AvailableCreditLimit {
+		return nil, fmt.Errorf("Dont have avaliable Credit  %f", account.AvailableCreditLimit)
+	}
+
 	transaction = checkTypeOperation(operation.Type, transaction)
+
+	account.AvailableCreditLimit += transaction.Amount
+
+	err = s.repo.UpdateAvailableCreditLimitAccount(account)
+	if err != nil {
+		return nil, err
+	}
+
 
 	tra, err := s.repo.InsertTransaction(transaction)
 	if err != nil {
@@ -69,3 +90,5 @@ func checkTypeOperation(typeOperator string, transaction Transaction) Transactio
 	}
 	return transaction
 }
+
+

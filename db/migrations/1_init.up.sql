@@ -1,6 +1,7 @@
 CREATE TABLE Accounts (
                           Account_ID INTEGER auto_increment primary key,
-                          Document_Number varchar(100) NOT NULL
+                          Document_Number varchar(100) NOT NULL,
+                          AvailableCreditLimit DOUBLE NOT NULL
 );
 
 CREATE TABLE OperationsTypes (
@@ -14,6 +15,7 @@ CREATE TABLE Transactions (
                               Account_ID INTEGER NOT NULL,
                               OperationsType_ID INTEGER NOT NULL,
                               Amount DOUBLE NOT NULL,
+                              Balance DOUBLE NOT NULL,
                               EventDate DATE
 );
 

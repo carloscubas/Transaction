@@ -2,6 +2,7 @@ package account
 
 import (
 	_ "database/sql"
+	"strings"
 	"testing"
 	"time"
 	"transaction/internal/config"
@@ -30,7 +31,11 @@ func TestService(t *testing.T) {
 		}
 
 		service := NewService(repository)
-		response, _ := service.InsertTransaction(transaction)
+		response, err := service.InsertTransaction(transaction)
+
+		if err != nil{
+			t.Errorf("error not expected")
+		}
 
 		if response.Amount != -26.0 {
 			t.Errorf("expected %f, got %f", -26.0, response.Amount)
@@ -81,6 +86,20 @@ func TestService(t *testing.T) {
 		result := checkTypeOperation(DEBIT, transaction)
 		if result.Amount != -26.30 {
 			t.Errorf("expected %f, got %f", -26.30, result.Amount)
+		}
+	})
+	t.Run("TestAvailableDontHaveCreditLimit", func(t *testing.T) {
+		transaction := Transaction{
+			AccountId:       1,
+			OperationTypeId: 1,
+			Amount:          5500.0,
+		}
+
+		service := NewService(repository)
+		_, err := service.InsertTransaction(transaction)
+
+		if  strings.Compare(err.Error(), "Dont have avaliable Credit 5000.0") == 0{
+			t.Errorf(err.Error())
 		}
 	})
 

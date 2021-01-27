@@ -4,5 +4,5 @@ curl --location --request POST 'localhost:8080/v1/transaction' \
 --data-raw '{
     "AccountID" : 1,
     "OperationsTypeID" : 1,
-    "Amount" : 20.36
+    "Amount" : 100
 }'
