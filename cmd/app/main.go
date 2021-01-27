@@ -42,6 +42,8 @@ func main() {
 		panic(err)
 	}
 
+	defer db.Close()
+
 	dataMigration(sc.Db.Database, sc.Db.Connection)
 
 	gin.SetMode(sc.Server.Mode)
