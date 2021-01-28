@@ -41,3 +41,4 @@ Before Run app open configs/dev.yaml file and rewrite de data.
     - https://kpat.io/2019/06/testing-with-gin/
     - https://github.com/1000kit/docker-h2
     - https://golang.org/pkg/testing/
+    - https://github.com/gin-gonic/examples/blob/master/graceful-shutdown/close/server.go
